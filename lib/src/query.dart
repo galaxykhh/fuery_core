@@ -5,7 +5,7 @@ import 'package:fuery/src/base/typedefs.dart';
 import 'package:fuery/src/query_options.dart';
 import 'package:fuery/src/query_result.dart';
 import 'package:fuery/src/query_state.dart';
-import 'package:fuery/src/fuery.dart';
+import 'package:fuery/src/fuery_client.dart';
 import 'package:fuery/src/util/timestamp.dart';
 
 class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {

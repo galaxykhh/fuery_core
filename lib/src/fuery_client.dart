@@ -1,6 +1,6 @@
 import 'package:fuery/src/base/query.dart';
 import 'package:fuery/src/base/typedefs.dart';
-import 'package:fuery/src/error/spark_exception.dart';
+import 'package:fuery/src/error/fuery_exception.dart';
 import 'package:fuery/src/query_cache.dart';
 import 'package:fuery/src/query_options.dart';
 

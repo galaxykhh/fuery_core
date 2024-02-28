@@ -4,7 +4,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:fuery/src/base/typedefs.dart';
 import 'package:fuery/src/query_options.dart';
 import 'package:fuery/src/query_state.dart';
-import 'package:fuery/src/fuery.dart';
+import 'package:fuery/src/fuery_client.dart';
 
 abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> {
   QueryBase({

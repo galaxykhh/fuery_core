@@ -15,4 +15,4 @@ export 'src/mutation_options.dart';
 export 'src/mutation_state.dart';
 
 // exception
-export 'src/error/spark_exception.dart';
+export 'src/error/fuery_exception.dart';
