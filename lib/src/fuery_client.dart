@@ -1,14 +1,14 @@
-import 'package:spark_core/src/base/query.dart';
-import 'package:spark_core/src/base/typedefs.dart';
-import 'package:spark_core/src/error/spark_exception.dart';
-import 'package:spark_core/src/query_cache.dart';
-import 'package:spark_core/src/query_options.dart';
+import 'package:fuery/src/base/query.dart';
+import 'package:fuery/src/base/typedefs.dart';
+import 'package:fuery/src/error/spark_exception.dart';
+import 'package:fuery/src/query_cache.dart';
+import 'package:fuery/src/query_options.dart';
 
-class SparkClient {
-  SparkClient._();
+class Fuery {
+  Fuery._();
 
-  static final SparkClient _singleton = SparkClient._();
-  static SparkClient get instance => _singleton;
+  static final Fuery _singleton = Fuery._();
+  static Fuery get instance => _singleton;
 
   QueryOptions _defaultQueryOptions = QueryOptions(
     gcTime: 1000 * 6 * 5,

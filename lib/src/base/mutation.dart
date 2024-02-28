@@ -1,8 +1,8 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:rxdart/subjects.dart';
-import 'package:spark_core/src/base/typedefs.dart';
-import 'package:spark_core/src/mutation_options.dart';
-import 'package:spark_core/src/mutation_state.dart';
+import 'package:fuery/src/base/typedefs.dart';
+import 'package:fuery/src/mutation_options.dart';
+import 'package:fuery/src/mutation_state.dart';
 
 abstract class MutationBase<Args, Data, Err, State extends MutationState<Data, Err>> {
   MutationBase({

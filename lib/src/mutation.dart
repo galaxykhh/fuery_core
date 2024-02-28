@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:spark_core/src/base/mutation.dart';
-import 'package:spark_core/src/base/mutation_state.dart';
-import 'package:spark_core/src/base/typedefs.dart';
-import 'package:spark_core/src/mutation_options.dart';
-import 'package:spark_core/src/mutation_state.dart';
+import 'package:fuery/src/base/mutation.dart';
+import 'package:fuery/src/base/mutation_state.dart';
+import 'package:fuery/src/base/typedefs.dart';
+import 'package:fuery/src/mutation_options.dart';
+import 'package:fuery/src/mutation_state.dart';
 
 part 'mutation_with_args.dart';
 part 'mutation_without_args.dart';

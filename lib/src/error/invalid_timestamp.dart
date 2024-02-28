@@ -1,6 +1,6 @@
-part of 'spark_exception.dart';
+part of 'fuery_exception.dart';
 
-class InvalidTimestampException extends SparkException {
+class InvalidTimestampException extends FueryException {
   InvalidTimestampException({
     super.message,
     required this.value,

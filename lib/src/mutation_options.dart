@@ -1,4 +1,4 @@
-import 'package:spark_core/src/base/typedefs.dart';
+import 'package:fuery/src/base/typedefs.dart';
 
 class MutationOptions<Args, Data, Err> {
   final Args? arguments;

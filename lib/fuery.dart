@@ -1,7 +1,7 @@
-library spark_core;
+library fuery;
 
-// spark client
-export 'src/spark_client.dart';
+// client
+export 'src/fuery_client.dart';
 
 // query
 export 'src/query.dart';

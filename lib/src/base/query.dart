@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:rxdart/rxdart.dart';
-import 'package:spark_core/src/base/typedefs.dart';
-import 'package:spark_core/src/query_options.dart';
-import 'package:spark_core/src/query_state.dart';
-import 'package:spark_core/src/spark_client.dart';
+import 'package:fuery/src/base/typedefs.dart';
+import 'package:fuery/src/query_options.dart';
+import 'package:fuery/src/query_state.dart';
+import 'package:fuery/src/fuery.dart';
 
 abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> {
   QueryBase({
@@ -13,7 +13,7 @@ abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> {
     required State state,
   })  : assert(queryKey.isNotEmpty, 'queryKey should not be empty'),
         _queryKey = queryKey,
-        _options = options ?? SparkClient.instance.defaultOptions,
+        _options = options ?? Fuery.instance.defaultOptions,
         _state = state;
 
   final QueryKey _queryKey;
@@ -48,7 +48,7 @@ abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> {
   void _setGcTimer() {
     _gcTimer ??= Timer(
       Duration(milliseconds: _options.gcTime),
-      () => SparkClient.instance.removeQuery(_queryKey),
+      () => Fuery.instance.removeQuery(_queryKey),
     );
   }
 

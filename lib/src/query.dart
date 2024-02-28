@@ -1,12 +1,12 @@
 import 'package:rxdart/rxdart.dart';
-import 'package:spark_core/src/base/query.dart';
-import 'package:spark_core/src/base/query_state.dart';
-import 'package:spark_core/src/base/typedefs.dart';
-import 'package:spark_core/src/query_options.dart';
-import 'package:spark_core/src/query_result.dart';
-import 'package:spark_core/src/query_state.dart';
-import 'package:spark_core/src/spark_client.dart';
-import 'package:spark_core/src/util/timestamp.dart';
+import 'package:fuery/src/base/query.dart';
+import 'package:fuery/src/base/query_state.dart';
+import 'package:fuery/src/base/typedefs.dart';
+import 'package:fuery/src/query_options.dart';
+import 'package:fuery/src/query_result.dart';
+import 'package:fuery/src/query_state.dart';
+import 'package:fuery/src/fuery.dart';
+import 'package:fuery/src/util/timestamp.dart';
 
 class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
   Query._({
@@ -25,9 +25,9 @@ class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
           ),
           options: QueryOptions<Data>(
             initialData: options?.initialData,
-            gcTime: options?.gcTime ?? SparkClient.instance.defaultOptions.gcTime,
-            staleTime: options?.staleTime ?? SparkClient.instance.defaultOptions.staleTime,
-            refetchInterval: options?.refetchInterval ?? SparkClient.instance.defaultOptions.refetchInterval,
+            gcTime: options?.gcTime ?? Fuery.instance.defaultOptions.gcTime,
+            staleTime: options?.staleTime ?? Fuery.instance.defaultOptions.staleTime,
+            refetchInterval: options?.refetchInterval ?? Fuery.instance.defaultOptions.refetchInterval,
           ),
         );
 
@@ -41,7 +41,7 @@ class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
   }) {
     assert(queryKey.isNotEmpty, 'queryKey should not be empty');
 
-    QueryBase? query = SparkClient.instance.getQuery(queryKey);
+    QueryBase? query = Fuery.instance.getQuery(queryKey);
     final QueryOptions<Data> options = QueryOptions(
       gcTime: gcTime,
       initialData: initialData,
@@ -63,7 +63,7 @@ class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
         queryFn: queryFn,
         options: options,
       );
-      SparkClient.instance.addQuery(queryKey, query..fetch());
+      Fuery.instance.addQuery(queryKey, query..fetch());
     }
 
     return QueryResult<Data, Err>(
