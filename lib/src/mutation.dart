@@ -34,7 +34,7 @@ sealed class Mutation<Args, Data, Err> extends MutationBase<Args, Data, Err, Mut
   }
 
   static Mutation<void, Data, Err> noArgs<Data, Err>({
-    required MutationKey mutationKey,
+    MutationKey? mutationKey,
     required MutationWithoutArgsFn<Data, Err> mutationFn,
     MutationMutateCallbackWithoutArgs onMutate,
     MutationSuccessCallbackWithoutArgs<Data> onSuccess,
@@ -50,4 +50,6 @@ sealed class Mutation<Args, Data, Err> extends MutationBase<Args, Data, Err, Mut
       ),
     );
   }
+
+  
 }

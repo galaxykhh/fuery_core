@@ -15,7 +15,6 @@ class _MutationWithoutArgs<Data, Err> extends Mutation<void, Data, Err> {
 
   @override
   void mutate({void args = Null}) {
-    print('LALA MUTATE');
     emit(state.copyWith(status: MutationStatus.pending));
 
     _mutationFn().then(
