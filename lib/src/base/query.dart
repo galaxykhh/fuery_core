@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:rxdart/rxdart.dart';
-import 'package:spark_core/base/typedefs.dart';
-import 'package:spark_core/query_options.dart';
-import 'package:spark_core/query_state.dart';
-import 'package:spark_core/spark_client.dart';
+import 'package:spark_core/src/base/typedefs.dart';
+import 'package:spark_core/src/query_options.dart';
+import 'package:spark_core/src/query_state.dart';
+import 'package:spark_core/src/spark_client.dart';
 
 abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> {
   QueryBase({
@@ -63,13 +63,13 @@ abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> {
 
   Future<void> refetch();
 
-  void invalidate() {
-    emit(_state.copyWith(invalidated: true) as State);
-  }
-
   void emit(State state) {
     _state = state;
     _subject?.add(state);
+  }
+
+  void invalidate() {
+    emit(_state.copyWith(invalidated: true) as State);
   }
 
   void updateOptions(QueryOptions options) {
@@ -90,10 +90,10 @@ abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> {
         _setRefetchTimer();
         _cancelGcTimer();
       }
-      ..onCancel = sleep;
+      ..onCancel = dispose;
   }
 
-  Future<void> sleep() async {
+  Future<void> dispose() async {
     await _subject?.close();
     _refetchTimer?.cancel();
     _subject = null;

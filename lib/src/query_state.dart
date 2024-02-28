@@ -1,5 +1,5 @@
-import 'package:spark_core/base/query_state.dart';
-import 'package:spark_core/util/timestamp.dart';
+import 'package:spark_core/src/base/query_state.dart';
+import 'package:spark_core/src/util/timestamp.dart';
 
 class QueryState<Data, Err> extends QueryStateBase<Data, Err> {
   QueryState({

@@ -1,7 +1,7 @@
-import 'package:spark_core/base/cache.dart';
-import 'package:spark_core/base/query.dart';
-import 'package:spark_core/base/typedefs.dart';
-import 'package:spark_core/util/cache_filter.dart';
+import 'package:spark_core/src/base/cache.dart';
+import 'package:spark_core/src/base/query.dart';
+import 'package:spark_core/src/base/typedefs.dart';
+import 'package:spark_core/src/util/cache_filter.dart';
 
 class QueryCache with CacheFilter<QueryBase> implements Cache<QueryBase> {
   QueryCache._();

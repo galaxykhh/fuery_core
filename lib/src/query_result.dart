@@ -1,5 +1,5 @@
-import 'package:spark_core/base/query_result.dart';
-import 'package:spark_core/query_state.dart';
+import 'package:spark_core/src/base/query_result.dart';
+import 'package:spark_core/src/query_state.dart';
 
 class QueryResult<Data, Err> extends QueryResultBase<Data, Err, QueryState<Data, Err>> {
   QueryResult({

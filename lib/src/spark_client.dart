@@ -1,8 +1,8 @@
-import 'package:spark_core/base/query.dart';
-import 'package:spark_core/base/typedefs.dart';
-import 'package:spark_core/error/spark_exception.dart';
-import 'package:spark_core/query_cache.dart';
-import 'package:spark_core/query_options.dart';
+import 'package:spark_core/src/base/query.dart';
+import 'package:spark_core/src/base/typedefs.dart';
+import 'package:spark_core/src/error/spark_exception.dart';
+import 'package:spark_core/src/query_cache.dart';
+import 'package:spark_core/src/query_options.dart';
 
 class SparkClient {
   SparkClient._();

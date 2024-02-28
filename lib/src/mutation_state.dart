@@ -1,4 +1,4 @@
-part of './base/mutation.dart';
+import 'package:spark_core/src/base/mutation_state.dart';
 
 class MutationState<Data, Err> extends MutationStateBase<Data, Err> {
   MutationState({

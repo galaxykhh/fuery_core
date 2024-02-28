@@ -1,5 +1,3 @@
-part of 'mutation.dart';
-
 enum MutationStatus {
   idle,
   pending,

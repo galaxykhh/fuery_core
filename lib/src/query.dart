@@ -1,12 +1,12 @@
 import 'package:rxdart/rxdart.dart';
-import 'package:spark_core/base/query.dart';
-import 'package:spark_core/base/query_state.dart';
-import 'package:spark_core/base/typedefs.dart';
-import 'package:spark_core/query_options.dart';
-import 'package:spark_core/query_result.dart';
-import 'package:spark_core/query_state.dart';
-import 'package:spark_core/spark_client.dart';
-import 'package:spark_core/util/timestamp.dart';
+import 'package:spark_core/src/base/query.dart';
+import 'package:spark_core/src/base/query_state.dart';
+import 'package:spark_core/src/base/typedefs.dart';
+import 'package:spark_core/src/query_options.dart';
+import 'package:spark_core/src/query_result.dart';
+import 'package:spark_core/src/query_state.dart';
+import 'package:spark_core/src/spark_client.dart';
+import 'package:spark_core/src/util/timestamp.dart';
 
 class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
   Query._({

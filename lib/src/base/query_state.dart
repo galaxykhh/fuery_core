@@ -1,4 +1,4 @@
-import 'package:spark_core/util/timestamp.dart';
+import 'package:spark_core/src/util/timestamp.dart';
 
 enum QueryStatus {
   idle,

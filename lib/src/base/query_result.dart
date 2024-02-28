@@ -1,6 +1,6 @@
 import 'package:rxdart/rxdart.dart';
-import 'package:spark_core/query_options.dart';
-import 'package:spark_core/query_state.dart';
+import 'package:spark_core/src/query_options.dart';
+import 'package:spark_core/src/query_state.dart';
 
 abstract class QueryResultBase<Data, Err, State extends QueryState<Data, Err>> {
   const QueryResultBase({
