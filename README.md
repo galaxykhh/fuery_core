@@ -49,13 +49,12 @@ mutation.mutate(args: 'some content');
 mutation.mutateAsync(args: 'some content');
 
 // without arguments
-
-final removePost = Mutation.noArgs<void, Exception>(
-  mutationFn: () => repository.methodHasNoArguments(),
+final removePosts = Mutation.noArgs<void, Exception>(
+  mutationFn: () => repository.removeAll(),
 );
 
-removePost.mutate();
-removePost.mutateAsync();
+removePosts.mutate();
+removePosts.mutateAsync();
 ```
 ### FueryClient
 ```dart

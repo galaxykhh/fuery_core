@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:fuery/src/base/typedefs.dart';
@@ -10,7 +11,15 @@ abstract class MutationBase<Args, Data, Err, State extends MutationState<Data, E
     MutationOptions<Args, Data, Err>? options,
   })  : _mutationKey = mutationKey,
         _options = options ?? MutationOptions(),
-        _state = MutationState<Data, Err>() as State;
+        _state = MutationState<Data, Err>() as State,
+        _subject = BehaviorSubject() {
+    _subject..onCancel = () {
+      print('CANCEL');
+      dispose();
+    }..onListen = () {
+      print('LISTEN');
+    };
+  }
 
   final MutationKey _mutationKey;
   MutationKey get mutationKey => _mutationKey;
@@ -21,15 +30,15 @@ abstract class MutationBase<Args, Data, Err, State extends MutationState<Data, E
   State _state;
   State get state => _state;
 
-  PublishSubject<State>? _subject;
+  final BehaviorSubject<State> _subject;
 
-  void mutate({Args args});
+  void mutate([Args? args]);
 
-  Future<Data> mutateAsync({Args args});
+  Future<Data> mutateAsync([Args? args]);
 
   void emit(State state) {
     _state = state;
-    _subject?.add(state);
+    _subject.add(state);
   }
 
   void setArgs(Args args) {
@@ -37,15 +46,12 @@ abstract class MutationBase<Args, Data, Err, State extends MutationState<Data, E
   }
 
   Future<void> dispose() async {
-    await _subject?.close();
-    _subject = null;
+    await _subject.close();
   }
 
   Stream<State> get stream {
-    _subject ??= PublishSubject()..onCancel = dispose;
-
-    return _subject!.stream;
+    return _subject.stream;
   }
 
-  bool get hasListener => _subject?.hasListener ?? false;
+  bool get hasListener => _subject.hasListener;
 }
