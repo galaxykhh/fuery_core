@@ -1,8 +1,10 @@
-import 'package:fuery/src/base/query.dart';
-import 'package:fuery/src/base/typedefs.dart';
-import 'package:fuery/src/error/fuery_exception.dart';
-import 'package:fuery/src/query_cache.dart';
-import 'package:fuery/src/query_options.dart';
+import 'package:fuery_core/src/base/mutation.dart';
+import 'package:fuery_core/src/base/query.dart';
+import 'package:fuery_core/src/base/typedefs.dart';
+import 'package:fuery_core/src/error/fuery_exception.dart';
+import 'package:fuery_core/src/mutation_cache.dart';
+import 'package:fuery_core/src/query_cache.dart';
+import 'package:fuery_core/src/query_options.dart';
 
 class Fuery {
   Fuery._();
@@ -18,13 +20,25 @@ class Fuery {
 
   final QueryCache _queryCache = QueryCache();
 
+  final MutationCache _mutationCache = MutationCache();
+
   QueryCache get cache => _queryCache;
+
+  MutationCache get mutationCache => _mutationCache;
 
   void config(QueryOptions options) {
     _defaultQueryOptions = options;
   }
 
-  void addQuery(QueryKey queryKey, QueryBase query) => _queryCache.add(queryKey, query);
+  void addQuery(
+    QueryKey queryKey,
+    QueryBase query,
+  ) {
+    _queryCache.add(
+      queryKey,
+      query,
+    );
+  }
 
   QueryBase? getQuery(QueryKey queryKey) => _queryCache.find(queryKey);
 
@@ -36,7 +50,10 @@ class Fuery {
     _queryCache.remove(queryKey);
   }
 
-  void setQueryData<T>(QueryKey queryKey, T data) {
+  void setQueryData<T>(
+    QueryKey queryKey,
+    T data,
+  ) {
     final QueryBase? query = _queryCache.find(queryKey);
 
     if (query == null) return;
@@ -65,5 +82,25 @@ class Fuery {
     for (final query in filtered) {
       query.invalidate();
     }
+  }
+
+  void addMutation(
+    MutationKey mutationKey,
+    MutationBase mutation,
+  ) {
+    _mutationCache.add(
+      mutationKey,
+      mutation,
+    );
+  }
+
+  MutationBase? getMutation(MutationKey mutationKey) => _mutationCache.find(mutationKey);
+
+  T? getMutationData<T>(MutationKey mutationKey) => _mutationCache.find(mutationKey)?.stream.value.data as T;
+
+  bool hasMutation(MutationKey mutationKey) => _mutationCache.has(mutationKey);
+
+  void removeMutation(MutationKey mutationKey) {
+    _mutationCache.remove(mutationKey);
   }
 }

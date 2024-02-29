@@ -1,4 +1,4 @@
-import 'package:fuery/src/base/typedefs.dart';
+import 'package:fuery_core/src/base/typedefs.dart';
 
 abstract class Cache<D> {
   D? find(SparkKey key);

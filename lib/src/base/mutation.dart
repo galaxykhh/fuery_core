@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'package:rxdart/rxdart.dart';
-import 'package:rxdart/subjects.dart';
-import 'package:fuery/src/base/typedefs.dart';
-import 'package:fuery/src/mutation_options.dart';
-import 'package:fuery/src/mutation_state.dart';
+import 'package:fuery_core/src/base/typedefs.dart';
+import 'package:fuery_core/src/mutation_options.dart';
+import 'package:fuery_core/src/mutation_state.dart';
 
 abstract class MutationBase<Args, Data, Err, State extends MutationState<Data, Err>> {
   MutationBase({
@@ -13,12 +12,14 @@ abstract class MutationBase<Args, Data, Err, State extends MutationState<Data, E
         _options = options ?? MutationOptions(),
         _state = MutationState<Data, Err>() as State,
         _subject = BehaviorSubject() {
-    _subject..onCancel = () {
-      print('CANCEL');
-      dispose();
-    }..onListen = () {
-      print('LISTEN');
-    };
+    _subject
+      ..onCancel = () {
+        print('MUTATION CANCEL');
+        dispose();
+      }
+      ..onListen = () {
+        print('MUTATION LISTEN');
+      };
   }
 
   final MutationKey _mutationKey;
@@ -49,7 +50,7 @@ abstract class MutationBase<Args, Data, Err, State extends MutationState<Data, E
     await _subject.close();
   }
 
-  Stream<State> get stream {
+  ValueStream<State> get stream {
     return _subject.stream;
   }
 

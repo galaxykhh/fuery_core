@@ -1,10 +1,11 @@
 import 'dart:async';
 
-import 'package:fuery/src/base/mutation.dart';
-import 'package:fuery/src/base/mutation_state.dart';
-import 'package:fuery/src/base/typedefs.dart';
-import 'package:fuery/src/mutation_options.dart';
-import 'package:fuery/src/mutation_state.dart';
+import 'package:fuery_core/src/base/mutation.dart';
+import 'package:fuery_core/src/base/mutation_state.dart';
+import 'package:fuery_core/src/base/typedefs.dart';
+import 'package:fuery_core/src/fuery_client.dart';
+import 'package:fuery_core/src/mutation_options.dart';
+import 'package:fuery_core/src/mutation_state.dart';
 
 part 'mutation_with_args.dart';
 part 'mutation_without_args.dart';
@@ -18,26 +19,37 @@ sealed class Mutation<Args, Data, Err> extends MutationBase<Args, Data, Err, Mut
   static Mutation<Args, Data, Err> args<Args, Data, Err>({
     required MutationWithArgsFn<Args, Data, Err> mutationFn,
     MutationKey? mutationKey,
+    int? gcTime,
     MutationMutateCallback<Args> onMutate,
     MutationSuccessCallback<Args, Data> onSuccess,
     MutationErrorCallback<Args, Err> onError,
   }) {
+    if (mutationKey != null) {
+      assert(mutationKey.isNotEmpty, 'mutationKey should not be empty');
+    }
+
     final Mutation<Args, Data, Err> mutation = _MutationWithArgs<Args, Data, Err>(
       mutationKey: mutationKey,
       mutationFn: mutationFn,
       options: MutationOptions<Args, Data, Err>(
+        gcTime: gcTime,
         onMutate: onMutate,
         onSuccess: onSuccess,
         onError: onError,
       ),
-    ).._setSubscription();
+    );
 
-    return mutation;
+    if (mutationKey != null) {
+      Fuery.instance.addMutation(mutationKey, mutation);
+    }
+
+    return mutation.._setSubscription();
   }
 
   static Mutation<void, Data, Err> noArgs<Data, Err>({
-    MutationKey? mutationKey,
     required MutationWithoutArgsFn<Data, Err> mutationFn,
+    MutationKey? mutationKey,
+    int? gcTime,
     MutationMutateCallbackWithoutArgs onMutate,
     MutationSuccessCallbackWithoutArgs<Data> onSuccess,
     MutationErrorCallbackWithoutArgs<Err> onError,
@@ -50,9 +62,9 @@ sealed class Mutation<Args, Data, Err> extends MutationBase<Args, Data, Err, Mut
         onSuccess: (data, __) => onSuccess?.call(data),
         onError: (error, __) => onError?.call(error),
       ),
-    ).._setSubscription();
+    );
 
-    return mutation;
+    return mutation.._setSubscription();
   }
 
   void _setSubscription() {

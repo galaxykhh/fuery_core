@@ -25,3 +25,5 @@ typedef MutationSuccessCallbackWithoutArgs<Data> = void Function(Data data)?;
 typedef MutationErrorCallback<Args, Err> = void Function(Err error, Args args)?;
 
 typedef MutationErrorCallbackWithoutArgs<Err> = void Function(Err error)?;
+
+typedef ValueGetter<T> = T? Function()?;

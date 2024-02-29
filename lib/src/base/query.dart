@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:rxdart/rxdart.dart';
-import 'package:fuery/src/base/typedefs.dart';
-import 'package:fuery/src/query_options.dart';
-import 'package:fuery/src/query_state.dart';
-import 'package:fuery/src/fuery_client.dart';
+import 'package:fuery_core/src/base/typedefs.dart';
+import 'package:fuery_core/src/query_options.dart';
+import 'package:fuery_core/src/query_state.dart';
+import 'package:fuery_core/src/fuery_client.dart';
 
 abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> {
   QueryBase({
@@ -85,12 +85,16 @@ abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> {
   }
 
   void wake() {
-    _subject ??= BehaviorSubject<State>.seeded(_state)
+    if (_subject != null) return;
+
+    _subject = BehaviorSubject<State>.seeded(_state)
       ..onListen = () {
         _setRefetchTimer();
         _cancelGcTimer();
       }
-      ..onCancel = dispose;
+      ..onCancel = () {
+        dispose();
+      };
   }
 
   Future<void> dispose() async {

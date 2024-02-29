@@ -1,7 +1,7 @@
-import 'package:fuery/src/base/cache.dart';
-import 'package:fuery/src/base/query.dart';
-import 'package:fuery/src/base/typedefs.dart';
-import 'package:fuery/src/util/cache_filter.dart';
+import 'package:fuery_core/src/base/cache.dart';
+import 'package:fuery_core/src/base/query.dart';
+import 'package:fuery_core/src/base/typedefs.dart';
+import 'package:fuery_core/src/util/cache_filter.dart';
 
 class QueryCache with CacheFilter<QueryBase> implements Cache<QueryBase> {
   QueryCache._();
@@ -24,8 +24,8 @@ class QueryCache with CacheFilter<QueryBase> implements Cache<QueryBase> {
     bool? exact,
   }) {
     return filter(
-      queries: _queries,
-      queryKey: key,
+      items: _queries,
+      key: key,
       exact: exact,
     );
   }

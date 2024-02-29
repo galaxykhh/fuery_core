@@ -1,10 +1,10 @@
-import 'package:fuery/src/base/typedefs.dart';
+import 'package:fuery_core/src/base/typedefs.dart';
 
 mixin CacheFilter<T> {
   List<T> filter({
-    required Store<T> queries,
-    QueryKey? queryKey,
+    required Store<T> items,
+    QueryKey? key,
     bool? exact = false,
   }) =>
-      queries.entries.map((e) => e.value).toList();
+      items.entries.map((e) => e.value).toList();
 }

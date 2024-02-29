@@ -29,7 +29,7 @@ flutter pub add fuery
 ```dart
 int id = 2;
 
-final post = Query.use<Post, Error>(
+late final post = Query.use<Post, Error>(
   queryKey: ['posts', id],
   queryFn: () => repository.getPostById(id),
 );
@@ -41,7 +41,7 @@ print(post.status);
 ### Mutation
 ```dart
 // with arguments
-final createPost = Mutation.args<String, Post, Error>(
+late final createPost = Mutation.args<String, Post, Error>(
   mutationFn: (String content) => repository.createPost(content),
 );
 
@@ -49,7 +49,7 @@ mutation.mutate(args: 'some content');
 mutation.mutateAsync(args: 'some content');
 
 // without arguments
-final removePosts = Mutation.noArgs<void, Exception>(
+late final removePosts = Mutation.noArgs<void, Exception>(
   mutationFn: () => repository.removeAll(),
 );
 

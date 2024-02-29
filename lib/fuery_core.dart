@@ -1,4 +1,4 @@
-library fuery;
+library fuery_core;
 
 // client
 export 'src/fuery_client.dart';

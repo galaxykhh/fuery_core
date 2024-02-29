@@ -1,4 +1,5 @@
-import 'package:fuery/src/base/mutation_state.dart';
+import 'package:fuery_core/src/base/mutation_state.dart';
+import 'package:fuery_core/src/base/typedefs.dart';
 
 class MutationState<Data, Err> extends MutationStateBase<Data, Err> {
   MutationState({
@@ -8,8 +9,8 @@ class MutationState<Data, Err> extends MutationStateBase<Data, Err> {
   });
 
   MutationState<Data, Err> copyWith({
-    Data? Function()? data,
-    Err? Function()? error,
+    ValueGetter<Data> data,
+    ValueGetter<Err> error,
     MutationStatus? status,
   }) {
     return MutationState<Data, Err>(

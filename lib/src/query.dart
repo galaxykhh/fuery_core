@@ -1,12 +1,12 @@
 import 'package:rxdart/rxdart.dart';
-import 'package:fuery/src/base/query.dart';
-import 'package:fuery/src/base/query_state.dart';
-import 'package:fuery/src/base/typedefs.dart';
-import 'package:fuery/src/query_options.dart';
-import 'package:fuery/src/query_result.dart';
-import 'package:fuery/src/query_state.dart';
-import 'package:fuery/src/fuery_client.dart';
-import 'package:fuery/src/util/timestamp.dart';
+import 'package:fuery_core/src/base/query.dart';
+import 'package:fuery_core/src/base/query_state.dart';
+import 'package:fuery_core/src/base/typedefs.dart';
+import 'package:fuery_core/src/query_options.dart';
+import 'package:fuery_core/src/query_result.dart';
+import 'package:fuery_core/src/query_state.dart';
+import 'package:fuery_core/src/fuery_client.dart';
+import 'package:fuery_core/src/util/timestamp.dart';
 
 class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
   Query._({
@@ -62,8 +62,12 @@ class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
         queryKey: queryKey,
         queryFn: queryFn,
         options: options,
+      )..fetch();
+
+      Fuery.instance.addQuery(
+        queryKey,
+        query,
       );
-      Fuery.instance.addQuery(queryKey, query..fetch());
     }
 
     return QueryResult<Data, Err>(

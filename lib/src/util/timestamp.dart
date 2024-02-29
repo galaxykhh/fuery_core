@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:fuery/src/error/fuery_exception.dart';
+import 'package:fuery_core/src/error/fuery_exception.dart';
 
 class Timestamp {
   const Timestamp(this.value);

@@ -1,3 +1,5 @@
+import 'package:fuery_core/src/base/typedefs.dart';
+
 class QueryOptions<Data> {
   QueryOptions({
     int? gcTime,
@@ -21,6 +23,20 @@ class QueryOptions<Data> {
   int get staleTime => _staleTime;
 
   int get refetchInterval => _refetchInterval;
+
+  QueryOptions<Data> copyWith({
+    ValueGetter<int> gcTime,
+    ValueGetter<Data> initialData,
+    ValueGetter<int> staleTime,
+    ValueGetter<int> refetchInterval,
+  }) {
+    return QueryOptions<Data>(
+      gcTime: gcTime != null ? gcTime() : _gcTime,
+      initialData: initialData != null ? initialData() : _initialData,
+      staleTime: staleTime != null ? staleTime() : _staleTime,
+      refetchInterval: refetchInterval != null ? refetchInterval() : _refetchInterval,
+    );
+  }
 
   @override
   bool operator ==(Object other) {

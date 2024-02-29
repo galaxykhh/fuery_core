@@ -1,5 +1,5 @@
 import 'package:rxdart/rxdart.dart';
-import 'package:fuery/src/mutation_state.dart';
+import 'package:fuery_core/src/mutation_state.dart';
 
 abstract class MutationResultBase<Data, Err, State extends MutationState<Data, Err>> {
   const MutationResultBase({

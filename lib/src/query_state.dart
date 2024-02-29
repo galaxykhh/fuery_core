@@ -1,5 +1,6 @@
-import 'package:fuery/src/base/query_state.dart';
-import 'package:fuery/src/util/timestamp.dart';
+import 'package:fuery_core/src/base/query_state.dart';
+import 'package:fuery_core/src/base/typedefs.dart';
+import 'package:fuery_core/src/util/timestamp.dart';
 
 class QueryState<Data, Err> extends QueryStateBase<Data, Err> {
   QueryState({
@@ -12,8 +13,8 @@ class QueryState<Data, Err> extends QueryStateBase<Data, Err> {
   });
 
   QueryState<Data, Err> copyWith({
-    Data? Function()? data,
-    Err? Function()? error,
+    ValueGetter<Data> data,
+    ValueGetter<Err> error,
     QueryStatus? status,
     FetchStatus? fetchStatus,
     bool? invalidated,
