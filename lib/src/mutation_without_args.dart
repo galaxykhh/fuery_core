@@ -15,18 +15,18 @@ class _MutationWithoutArgs<Data, Err> extends Mutation<void, Data, Err> {
 
   @override
   void mutate([void args = Null]) {
-    emit(state.copyWith(status: MutationStatus.pending));
+    emit(stream.value.copyWith(status: MutationStatus.pending));
 
     _mutationFn().then(
       (result) {
-        emit(state.copyWith(
+        emit(stream.value.copyWith(
           data: () => result,
           status: MutationStatus.success,
         ));
         // options.onSuccess?.call(result, null);
       },
       onError: (error) {
-        emit(state.copyWith(
+        emit(stream.value.copyWith(
           error: error,
           status: MutationStatus.failure,
         ));
@@ -39,7 +39,7 @@ class _MutationWithoutArgs<Data, Err> extends Mutation<void, Data, Err> {
 
   @override
   Future<Data> mutateAsync([void args = Null]) async {
-    emit(state.copyWith(status: MutationStatus.pending));
+    emit(stream.value.copyWith(status: MutationStatus.pending));
 
     try {
       final Future<Data> future = _mutationFn();

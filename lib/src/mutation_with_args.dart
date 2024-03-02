@@ -18,20 +18,20 @@ class _MutationWithArgs<Args, Data, Err> extends Mutation<Args, Data, Err> {
     assert(args is Args, 'arguments should not be null');
 
     setArgs(args as Args);
-    emit(state.copyWith(status: MutationStatus.pending));
+    emit(stream.value.copyWith(status: MutationStatus.pending));
 
     // options.onMutate?.call(args);
 
     _mutationFn(args).then(
       (result) {
-        emit(state.copyWith(
+        emit(stream.value.copyWith(
           data: () => result,
           status: MutationStatus.success,
         ));
         // options.onSuccess?.call(result, args);
       },
       onError: (error) {
-        emit(state.copyWith(
+        emit(stream.value.copyWith(
           error: error,
           status: MutationStatus.failure,
         ));
@@ -46,7 +46,7 @@ class _MutationWithArgs<Args, Data, Err> extends Mutation<Args, Data, Err> {
     assert(args is Args, 'MutationWithArgs: args required');
 
     setArgs(args as Args);
-    emit(state.copyWith(status: MutationStatus.pending));
+    emit(stream.value.copyWith(status: MutationStatus.pending));
 
     try {
       final Future<Data> future = _mutationFn(args);
@@ -59,7 +59,7 @@ class _MutationWithArgs<Args, Data, Err> extends Mutation<Args, Data, Err> {
 
       return data;
     } catch (e) {
-      emit(state.copyWith(status: MutationStatus.failure, error: e as dynamic));
+      emit(stream.value.copyWith(status: MutationStatus.failure, error: e as dynamic));
       // options.onError?.call(e as dynamic, args);
       rethrow;
     }

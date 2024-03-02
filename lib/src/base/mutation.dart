@@ -10,17 +10,7 @@ abstract class MutationBase<Args, Data, Err, State extends MutationState<Data, E
     MutationOptions<Args, Data, Err>? options,
   })  : _mutationKey = mutationKey,
         _options = options ?? MutationOptions(),
-        _state = MutationState<Data, Err>() as State,
-        _subject = BehaviorSubject() {
-    _subject
-      ..onCancel = () {
-        print('MUTATION CANCEL');
-        dispose();
-      }
-      ..onListen = () {
-        print('MUTATION LISTEN');
-      };
-  }
+        _state = MutationState<Data, Err>() as State;
 
   final MutationKey _mutationKey;
   MutationKey get mutationKey => _mutationKey;
@@ -29,9 +19,8 @@ abstract class MutationBase<Args, Data, Err, State extends MutationState<Data, E
   MutationOptions<Args, Data, Err> get options => _options;
 
   State _state;
-  State get state => _state;
 
-  final BehaviorSubject<State> _subject;
+  BehaviorSubject<State>? _subject;
 
   void mutate([Args? args]);
 
@@ -39,7 +28,7 @@ abstract class MutationBase<Args, Data, Err, State extends MutationState<Data, E
 
   void emit(State state) {
     _state = state;
-    _subject.add(state);
+    _subject?.add(_state);
   }
 
   void setArgs(Args args) {
@@ -47,12 +36,14 @@ abstract class MutationBase<Args, Data, Err, State extends MutationState<Data, E
   }
 
   Future<void> dispose() async {
-    await _subject.close();
+    await _subject?.close();
   }
 
   ValueStream<State> get stream {
-    return _subject.stream;
+    _subject ??= BehaviorSubject.seeded(_state)..onCancel = dispose;
+
+    return _subject!.stream;
   }
 
-  bool get hasListener => _subject.hasListener;
+  bool get hasListener => _subject?.hasListener ?? false;
 }

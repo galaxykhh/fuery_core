@@ -65,7 +65,7 @@ abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> {
 
   void emit(State state) {
     _state = state;
-    _subject?.add(state);
+    _subject?.add(_state);
   }
 
   void invalidate() {
@@ -93,11 +93,11 @@ abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> {
         _cancelGcTimer();
       }
       ..onCancel = () {
-        dispose();
+        sleep();
       };
   }
 
-  Future<void> dispose() async {
+  Future<void> sleep() async {
     await _subject?.close();
     _refetchTimer?.cancel();
     _subject = null;
