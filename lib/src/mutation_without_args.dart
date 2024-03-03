@@ -23,18 +23,18 @@ class _MutationWithoutArgs<Data, Err> extends Mutation<void, Data, Err> {
           data: () => result,
           status: MutationStatus.success,
         ));
-        // options.onSuccess?.call(result, null);
+        options.onSuccess?.call(result, null);
       },
       onError: (error) {
         emit(stream.value.copyWith(
           error: error,
           status: MutationStatus.failure,
         ));
-        // options.onError?.call(error, null);
+        options.onError?.call(error, null);
       },
     );
 
-    // options.onMutate?.call(null);
+    options.onMutate?.call(null);
   }
 
   @override
@@ -44,15 +44,15 @@ class _MutationWithoutArgs<Data, Err> extends Mutation<void, Data, Err> {
     try {
       final Future<Data> future = _mutationFn();
 
-      // options.onMutate?.call(null);
+      options.onMutate?.call(null);
 
       final Data data = await future;
 
-      // options.onSuccess?.call(data, null);
+      options.onSuccess?.call(data, null);
 
       return data;
     } catch (e) {
-      // options.onError?.call(e as dynamic, null);
+      options.onError?.call(e as dynamic, null);
       rethrow;
     }
   }

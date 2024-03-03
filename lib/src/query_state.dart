@@ -13,8 +13,8 @@ class QueryState<Data, Err> extends QueryStateBase<Data, Err> {
   });
 
   QueryState<Data, Err> copyWith({
-    ValueGetter<Data> data,
-    ValueGetter<Err> error,
+    ValueGetter<Data>? data,
+    ValueGetter<Err>? error,
     QueryStatus? status,
     FetchStatus? fetchStatus,
     bool? invalidated,

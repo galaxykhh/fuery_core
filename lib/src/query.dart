@@ -48,7 +48,7 @@ class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
       staleTime: staleTime,
       refetchInterval: refetchInterval,
     );
-    final bool exists = query != null;
+    final bool exists = query is QueryBase;
 
     if (exists) {
       final bool shouldRefetch = !query.stream.value.isLoading && query.isStale;

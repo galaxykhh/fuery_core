@@ -93,11 +93,11 @@ abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> {
         _cancelGcTimer();
       }
       ..onCancel = () {
-        sleep();
+        dispose();
       };
   }
 
-  Future<void> sleep() async {
+  Future<void> dispose() async {
     await _subject?.close();
     _refetchTimer?.cancel();
     _subject = null;

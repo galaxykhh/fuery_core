@@ -9,8 +9,8 @@ class MutationState<Data, Err> extends MutationStateBase<Data, Err> {
   });
 
   MutationState<Data, Err> copyWith({
-    ValueGetter<Data> data,
-    ValueGetter<Err> error,
+    ValueGetter<Data>? data,
+    ValueGetter<Err>? error,
     MutationStatus? status,
   }) {
     return MutationState<Data, Err>(

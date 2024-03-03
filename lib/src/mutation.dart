@@ -20,12 +20,18 @@ sealed class Mutation<Args, Data, Err> extends MutationBase<Args, Data, Err, Mut
     required MutationWithArgsFn<Args, Data, Err> mutationFn,
     MutationKey? mutationKey,
     int? gcTime,
-    MutationMutateCallback<Args> onMutate,
-    MutationSuccessCallback<Args, Data> onSuccess,
-    MutationErrorCallback<Args, Err> onError,
+    MutationMutateCallback<Args>? onMutate,
+    MutationSuccessCallback<Args, Data>? onSuccess,
+    MutationErrorCallback<Args, Err>? onError,
   }) {
     if (mutationKey != null) {
       assert(mutationKey.isNotEmpty, 'mutationKey should not be empty');
+      final MutationBase? mutation = Fuery.instance.getMutation(mutationKey);
+      final bool exists = mutation is MutationBase;
+
+      if (exists) {
+        return mutation as Mutation<Args, Data, Err>;
+      }
     }
 
     final Mutation<Args, Data, Err> mutation = _MutationWithArgs<Args, Data, Err>(
@@ -43,17 +49,21 @@ sealed class Mutation<Args, Data, Err> extends MutationBase<Args, Data, Err, Mut
       Fuery.instance.addMutation(mutationKey, mutation);
     }
 
-    return mutation.._setSubscription();
+    return mutation;
   }
 
   static Mutation<void, Data, Err> noArgs<Data, Err>({
     required MutationWithoutArgsFn<Data, Err> mutationFn,
     MutationKey? mutationKey,
     int? gcTime,
-    MutationMutateCallbackWithoutArgs onMutate,
-    MutationSuccessCallbackWithoutArgs<Data> onSuccess,
-    MutationErrorCallbackWithoutArgs<Err> onError,
+    MutationMutateCallbackWithoutArgs? onMutate,
+    MutationSuccessCallbackWithoutArgs<Data>? onSuccess,
+    MutationErrorCallbackWithoutArgs<Err>? onError,
   }) {
+    if (mutationKey != null) {
+      assert(mutationKey.isNotEmpty, 'mutationKey should not be empty');
+    }
+
     final Mutation<void, Data, Err> mutation = _MutationWithoutArgs<Data, Err>(
       mutationKey: mutationKey,
       mutationFn: mutationFn,
@@ -64,44 +74,6 @@ sealed class Mutation<Args, Data, Err> extends MutationBase<Args, Data, Err, Mut
       ),
     );
 
-    return mutation.._setSubscription();
-  }
-
-  void _setSubscription() {
-    _subscription = stream.listen((state) {
-      switch (state.status) {
-        case MutationStatus.pending:
-          print('MUTATE:::');
-          options.onMutate?.call(options.arguments as Args);
-          break;
-
-        case MutationStatus.failure:
-          print('FAILURE:::');
-          assert(state.error is Err, 'Err should not be null');
-          options.onError?.call(
-            state.error as Err,
-            options.arguments as Args,
-          );
-          break;
-
-        case MutationStatus.success:
-          print('SUCCESS:::');
-          options.onSuccess?.call(
-            state.data as Data,
-            options.arguments as Args,
-          );
-          break;
-
-        default:
-      }
-    });
-  }
-
-  late final StreamSubscription _subscription;
-
-  @override
-  Future<void> dispose() async {
-    _subscription.cancel();
-    super.dispose();
+    return mutation;
   }
 }

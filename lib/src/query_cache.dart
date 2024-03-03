@@ -36,7 +36,8 @@ class QueryCache with CacheFilter<QueryBase> implements Cache<QueryBase> {
   }
 
   @override
-  void remove(QueryKey key) {
+  Future<void> remove(QueryKey key) async {
+    await find(key)?.dispose();
     _queries.remove(key.toString());
   }
 }

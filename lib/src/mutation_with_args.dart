@@ -20,7 +20,7 @@ class _MutationWithArgs<Args, Data, Err> extends Mutation<Args, Data, Err> {
     setArgs(args as Args);
     emit(stream.value.copyWith(status: MutationStatus.pending));
 
-    // options.onMutate?.call(args);
+    options.onMutate?.call(args);
 
     _mutationFn(args).then(
       (result) {
@@ -28,14 +28,14 @@ class _MutationWithArgs<Args, Data, Err> extends Mutation<Args, Data, Err> {
           data: () => result,
           status: MutationStatus.success,
         ));
-        // options.onSuccess?.call(result, args);
+        options.onSuccess?.call(result, args);
       },
       onError: (error) {
         emit(stream.value.copyWith(
           error: error,
           status: MutationStatus.failure,
         ));
-        // options.onError?.call(error, args);
+        options.onError?.call(error, args);
         throw error;
       },
     );
@@ -51,16 +51,16 @@ class _MutationWithArgs<Args, Data, Err> extends Mutation<Args, Data, Err> {
     try {
       final Future<Data> future = _mutationFn(args);
 
-      // options.onMutate?.call(args);
+      options.onMutate?.call(args);
 
       final Data data = await future;
 
-      // options.onSuccess?.call(data, args);
+      options.onSuccess?.call(data, args);
 
       return data;
     } catch (e) {
       emit(stream.value.copyWith(status: MutationStatus.failure, error: e as dynamic));
-      // options.onError?.call(e as dynamic, args);
+      options.onError?.call(e as dynamic, args);
       rethrow;
     }
   }

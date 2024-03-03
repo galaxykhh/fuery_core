@@ -14,16 +14,16 @@ typedef MutationWithoutArgsFn<Data, Err> = Future<Data> Function();
 
 typedef Store<T> = Map<String, T>;
 
-typedef MutationMutateCallback<Args> = void Function(Args args)?;
+typedef MutationMutateCallback<Args> = void Function(Args args);
 
-typedef MutationMutateCallbackWithoutArgs = void Function()?;
+typedef MutationMutateCallbackWithoutArgs = void Function();
 
-typedef MutationSuccessCallback<Args, Data> = void Function(Data data, Args args)?;
+typedef MutationSuccessCallback<Args, Data> = void Function(Data data, Args args);
 
-typedef MutationSuccessCallbackWithoutArgs<Data> = void Function(Data data)?;
+typedef MutationSuccessCallbackWithoutArgs<Data> = void Function(Data data);
 
-typedef MutationErrorCallback<Args, Err> = void Function(Err error, Args args)?;
+typedef MutationErrorCallback<Args, Err> = void Function(Err error, Args args);
 
-typedef MutationErrorCallbackWithoutArgs<Err> = void Function(Err error)?;
+typedef MutationErrorCallbackWithoutArgs<Err> = void Function(Err error);
 
-typedef ValueGetter<T> = T? Function()?;
+typedef ValueGetter<T> = T? Function();

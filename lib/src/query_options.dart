@@ -25,10 +25,10 @@ class QueryOptions<Data> {
   int get refetchInterval => _refetchInterval;
 
   QueryOptions<Data> copyWith({
-    ValueGetter<int> gcTime,
-    ValueGetter<Data> initialData,
-    ValueGetter<int> staleTime,
-    ValueGetter<int> refetchInterval,
+    ValueGetter<int>? gcTime,
+    ValueGetter<Data>? initialData,
+    ValueGetter<int>? staleTime,
+    ValueGetter<int>? refetchInterval,
   }) {
     return QueryOptions<Data>(
       gcTime: gcTime != null ? gcTime() : _gcTime,
