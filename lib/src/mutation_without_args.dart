@@ -1,7 +1,7 @@
 part of 'mutation.dart';
 
-class _MutationWithoutArgs<Data, Err> extends Mutation<void, Data, Err> {
-  _MutationWithoutArgs({
+class MutationWithoutArgs<Data, Err> extends Mutation<void, Data, Err> {
+  MutationWithoutArgs({
     required MutationWithoutArgsFn<Data, Err> mutationFn,
     MutationOptions<void, Data, Err>? options,
     MutationKey? mutationKey,
@@ -13,32 +13,7 @@ class _MutationWithoutArgs<Data, Err> extends Mutation<void, Data, Err> {
 
   final MutationWithoutArgsFn<Data, Err> _mutationFn;
 
-  @override
-  void mutate([void args = Null]) {
-    emit(stream.value.copyWith(status: MutationStatus.pending));
-
-    _mutationFn().then(
-      (result) {
-        emit(stream.value.copyWith(
-          data: () => result,
-          status: MutationStatus.success,
-        ));
-        options.onSuccess?.call(result, null);
-      },
-      onError: (error) {
-        emit(stream.value.copyWith(
-          error: error,
-          status: MutationStatus.failure,
-        ));
-        options.onError?.call(error, null);
-      },
-    );
-
-    options.onMutate?.call(null);
-  }
-
-  @override
-  Future<Data> mutateAsync([void args = Null]) async {
+  Future<Data> _invoke() async {
     emit(stream.value.copyWith(status: MutationStatus.pending));
 
     try {
@@ -48,12 +23,16 @@ class _MutationWithoutArgs<Data, Err> extends Mutation<void, Data, Err> {
 
       final Data data = await future;
 
-      options.onSuccess?.call(data, null);
+      options.onSuccess?.call(null, data);
 
       return data;
     } catch (e) {
-      options.onError?.call(e as dynamic, null);
+      options.onError?.call(null, e as Err);
       rethrow;
     }
   }
+
+  void mutate() => _invoke();
+
+  Future<Data> mutateAsync() async => await _invoke();
 }

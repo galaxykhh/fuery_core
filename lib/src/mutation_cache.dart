@@ -39,7 +39,7 @@ class MutationCache with CacheFilter<MutationBase> implements Cache<MutationBase
 
   @override
   Future<void> remove(MutationKey key) async {
-    await find(key)?.dispose();
+    await find(key)?.sleep();
     _mutations.remove(key.toString());
   }
 }

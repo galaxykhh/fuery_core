@@ -16,7 +16,31 @@ sealed class Mutation<Args, Data, Err> extends MutationBase<Args, Data, Err, Mut
     super.options,
   }) : super(mutationKey: mutationKey ?? []);
 
-  static Mutation<Args, Data, Err> args<Args, Data, Err>({
+  static MutationBase _getCachedMutation<T>({
+    required MutationKey? mutationKey,
+    required MutationBase Function() orElse,
+  }) {
+    try {
+      final bool hasMutationKey = mutationKey != null;
+
+      if (hasMutationKey) {
+        assert(mutationKey.isNotEmpty, 'mutationKey should not be empty');
+
+        final MutationBase? mutation = Fuery.instance.getMutation(mutationKey);
+        final bool exists = mutation is MutationBase;
+
+        if (exists) {
+          return mutation;
+        }
+      }
+
+      return orElse();
+    } catch(_) {
+      rethrow;
+    }
+  }
+
+  static MutationWithArgs<Args, Data, Err> args<Args, Data, Err>({
     required MutationWithArgsFn<Args, Data, Err> mutationFn,
     MutationKey? mutationKey,
     int? gcTime,
@@ -24,35 +48,28 @@ sealed class Mutation<Args, Data, Err> extends MutationBase<Args, Data, Err, Mut
     MutationSuccessCallback<Args, Data>? onSuccess,
     MutationErrorCallback<Args, Err>? onError,
   }) {
-    if (mutationKey != null) {
-      assert(mutationKey.isNotEmpty, 'mutationKey should not be empty');
-      final MutationBase? mutation = Fuery.instance.getMutation(mutationKey);
-      final bool exists = mutation is MutationBase;
-
-      if (exists) {
-        return mutation as Mutation<Args, Data, Err>;
-      }
-    }
-
-    final Mutation<Args, Data, Err> mutation = _MutationWithArgs<Args, Data, Err>(
+    return _getCachedMutation<MutationWithArgs<Args, Data, Err>>(
       mutationKey: mutationKey,
-      mutationFn: mutationFn,
-      options: MutationOptions<Args, Data, Err>(
-        gcTime: gcTime,
-        onMutate: onMutate,
-        onSuccess: onSuccess,
-        onError: onError,
-      ),
-    );
+      orElse: () {
+        final MutationWithArgs<Args, Data, Err> mutation = MutationWithArgs<Args, Data, Err>(
+          mutationKey: mutationKey,
+          mutationFn: mutationFn,
+          options: MutationOptions<Args, Data, Err>(
+            gcTime: gcTime,
+            onMutate: onMutate,
+            onSuccess: onSuccess,
+            onError: onError,
+          ),
+        );
 
-    if (mutationKey != null) {
-      Fuery.instance.addMutation(mutationKey, mutation);
-    }
+        if (mutationKey != null) Fuery.instance.addMutation(mutationKey, mutation);
 
-    return mutation;
+        return mutation;
+      },
+    ) as MutationWithArgs<Args, Data, Err>;
   }
 
-  static Mutation<void, Data, Err> noArgs<Data, Err>({
+  static MutationWithoutArgs<Data, Err> noArgs<Data, Err>({
     required MutationWithoutArgsFn<Data, Err> mutationFn,
     MutationKey? mutationKey,
     int? gcTime,
@@ -60,20 +77,23 @@ sealed class Mutation<Args, Data, Err> extends MutationBase<Args, Data, Err, Mut
     MutationSuccessCallbackWithoutArgs<Data>? onSuccess,
     MutationErrorCallbackWithoutArgs<Err>? onError,
   }) {
-    if (mutationKey != null) {
-      assert(mutationKey.isNotEmpty, 'mutationKey should not be empty');
-    }
-
-    final Mutation<void, Data, Err> mutation = _MutationWithoutArgs<Data, Err>(
+    return _getCachedMutation<MutationWithoutArgs<Data, Err>>(
       mutationKey: mutationKey,
-      mutationFn: mutationFn,
-      options: MutationOptions(
-        onMutate: (_) => onMutate?.call(),
-        onSuccess: (data, __) => onSuccess?.call(data),
-        onError: (error, __) => onError?.call(error),
-      ),
-    );
+      orElse: () {
+        final MutationWithoutArgs<Data, Err> mutation = MutationWithoutArgs<Data, Err>(
+          mutationKey: mutationKey,
+          mutationFn: mutationFn,
+          options: MutationOptions(
+            onMutate: (_) => onMutate?.call(),
+            onSuccess: (_, data) => onSuccess?.call(data),
+            onError: (_, error) => onError?.call(error),
+          ),
+        );
 
-    return mutation;
+        if (mutationKey != null) Fuery.instance.addMutation(mutationKey, mutation);
+
+        return mutation;
+      },
+    ) as MutationWithoutArgs<Data, Err>;
   }
 }

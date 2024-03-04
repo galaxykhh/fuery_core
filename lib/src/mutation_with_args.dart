@@ -1,7 +1,7 @@
 part of 'mutation.dart';
 
-class _MutationWithArgs<Args, Data, Err> extends Mutation<Args, Data, Err> {
-  _MutationWithArgs({
+class MutationWithArgs<Args, Data, Err> extends Mutation<Args, Data, Err> {
+  MutationWithArgs({
     required MutationWithArgsFn<Args, Data, Err> mutationFn,
     MutationOptions<Args, Data, Err>? options,
     MutationKey? mutationKey,
@@ -13,39 +13,8 @@ class _MutationWithArgs<Args, Data, Err> extends Mutation<Args, Data, Err> {
 
   final MutationWithArgsFn<Args, Data, Err> _mutationFn;
 
-  @override
-  void mutate([Args? args]) async {
-    assert(args is Args, 'arguments should not be null');
-
-    setArgs(args as Args);
-    emit(stream.value.copyWith(status: MutationStatus.pending));
-
-    options.onMutate?.call(args);
-
-    _mutationFn(args).then(
-      (result) {
-        emit(stream.value.copyWith(
-          data: () => result,
-          status: MutationStatus.success,
-        ));
-        options.onSuccess?.call(result, args);
-      },
-      onError: (error) {
-        emit(stream.value.copyWith(
-          error: error,
-          status: MutationStatus.failure,
-        ));
-        options.onError?.call(error, args);
-        throw error;
-      },
-    );
-  }
-
-  @override
-  Future<Data> mutateAsync([Args? args]) async {
-    assert(args is Args, 'MutationWithArgs: args required');
-
-    setArgs(args as Args);
+  Future<Data> _invoke(Args args) async {
+    setArguments(args);
     emit(stream.value.copyWith(status: MutationStatus.pending));
 
     try {
@@ -55,13 +24,22 @@ class _MutationWithArgs<Args, Data, Err> extends Mutation<Args, Data, Err> {
 
       final Data data = await future;
 
-      options.onSuccess?.call(data, args);
+      options.onSuccess?.call(args, data);
 
       return data;
     } catch (e) {
-      emit(stream.value.copyWith(status: MutationStatus.failure, error: e as dynamic));
-      options.onError?.call(e as dynamic, args);
+      emit(
+        stream.value.copyWith(
+          status: MutationStatus.failure,
+          error: () => e as Err,
+        ),
+      );
+      options.onError?.call(args, e as Err);
       rethrow;
     }
   }
+
+  void mutate(Args args) => _invoke(args);
+
+  Future<Data> mutateAsync(Args args) async => await _invoke(args);
 }

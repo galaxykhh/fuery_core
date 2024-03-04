@@ -8,7 +8,7 @@ class MutationOptions<Args, Data, Err> {
     MutationSuccessCallback<Args, Data>? onSuccess,
     MutationErrorCallback<Args, Err>? onError,
   })  : _arguments = arguments,
-        _gcTime = gcTime ?? 1000 * 60 * 5,
+        _gcTime = gcTime ?? 0,
         _onMutate = onMutate,
         _onSuccess = onSuccess,
         _onError = onError;
@@ -17,7 +17,7 @@ class MutationOptions<Args, Data, Err> {
   Args? get arguments => _arguments;
 
   final int _gcTime;
-  int get gctime => _gcTime;
+  int get gcTime => _gcTime;
 
   final MutationMutateCallback<Args>? _onMutate;
   MutationMutateCallback<Args>? get onMutate => _onMutate;

@@ -1,12 +1,14 @@
 import 'dart:async';
 
+import 'package:fuery_core/src/util/garbage_collector.dart';
+import 'package:fuery_core/src/util/refetcher.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:fuery_core/src/base/typedefs.dart';
 import 'package:fuery_core/src/query_options.dart';
 import 'package:fuery_core/src/query_state.dart';
 import 'package:fuery_core/src/fuery_client.dart';
 
-abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> {
+abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> with Refetcher, GarbageCollector {
   QueryBase({
     required QueryKey queryKey,
     required QueryOptions? options,
@@ -26,37 +28,26 @@ abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> {
 
   BehaviorSubject<State>? _subject;
 
-  Timer? _refetchTimer;
-  Timer? _gcTimer;
-
   void _setRefetchTimer() {
-    if (_options.refetchInterval > 0 && hasListener) {
-      _refetchTimer ??= Timer.periodic(
-        Duration(milliseconds: _options.refetchInterval),
-        (_) => refetch(),
+    final bool canUpdateRefetcher = _options.refetchInterval > 0 && hasListener;
+
+    if (canUpdateRefetcher) {
+      super.setRefetchTimer(
+        interval: _options.refetchInterval,
+        callback: refetch,
       );
     }
   }
 
-  void _cancelRefetchTimer() {
-    if (_refetchTimer != null) {
-      _refetchTimer?.cancel();
-      _refetchTimer = null;
-    }
-  }
-
   void _setGcTimer() {
-    _gcTimer ??= Timer(
-      Duration(milliseconds: _options.gcTime),
-      () => Fuery.instance.removeQuery(_queryKey),
+    super.setGcTimer(
+      gcTime: _options.gcTime,
+      callback: () => Fuery.instance.removeQuery(queryKey),
     );
   }
 
   void _cancelGcTimer() {
-    if (_gcTimer != null && hasListener) {
-      _gcTimer?.cancel();
-      _gcTimer = null;
-    }
+    if (hasListener) super.cancelGcTimer();
   }
 
   Future<void> fetch();
@@ -79,7 +70,7 @@ abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> {
     _options = options;
 
     if (shouldUpdateRefetchTimer) {
-      _cancelRefetchTimer();
+      cancelRefetchTimer();
       _setRefetchTimer();
     }
   }
@@ -92,14 +83,12 @@ abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> {
         _setRefetchTimer();
         _cancelGcTimer();
       }
-      ..onCancel = () {
-        dispose();
-      };
+      ..onCancel = sleep;
   }
 
-  Future<void> dispose() async {
+  Future<void> sleep() async {
     await _subject?.close();
-    _refetchTimer?.cancel();
+    cancelRefetchTimer();
     _subject = null;
     _setGcTimer();
   }

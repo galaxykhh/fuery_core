@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'package:fuery_core/src/fuery_client.dart';
+import 'package:fuery_core/src/util/garbage_collector.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:fuery_core/src/base/typedefs.dart';
 import 'package:fuery_core/src/mutation_options.dart';
 import 'package:fuery_core/src/mutation_state.dart';
 
-abstract class MutationBase<Args, Data, Err, State extends MutationState<Data, Err>> {
+abstract class MutationBase<Args, Data, Err, State extends MutationState<Data, Err>> with GarbageCollector {
   MutationBase({
     required MutationKey mutationKey,
     MutationOptions<Args, Data, Err>? options,
@@ -22,26 +24,42 @@ abstract class MutationBase<Args, Data, Err, State extends MutationState<Data, E
 
   BehaviorSubject<State>? _subject;
 
-  void mutate([Args? args]);
+  void _setGcTimer() {
+    super.setGcTimer(
+      gcTime: _options.gcTime,
+      callback: () => Fuery.instance.removeMutation(mutationKey),
+    );
+  }
 
-  Future<Data> mutateAsync([Args? args]);
+  void _cancelGcTimer() {
+    if (hasListener) super.cancelGcTimer();
+  }
 
   void emit(State state) {
     _state = state;
     _subject?.add(_state);
   }
 
-  void setArgs(Args args) {
-    _options = _options.copyWith(arguments: () => args);
+  void setArguments(Args arguments) {
+    _options = _options.copyWith(arguments: () => arguments);
   }
 
-  Future<void> dispose() async {
+  void wake() {
+    if (_subject != null) return;
+
+    _subject = BehaviorSubject.seeded(_state)
+      ..onListen = _cancelGcTimer
+      ..onCancel = sleep;
+  }
+
+  Future<void> sleep() async {
     await _subject?.close();
+    _subject = null;
+    _setGcTimer();
   }
 
   ValueStream<State> get stream {
-    _subject ??= BehaviorSubject.seeded(_state)..onCancel = dispose;
-
+    wake();
     return _subject!.stream;
   }
 

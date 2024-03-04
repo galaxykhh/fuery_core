@@ -18,11 +18,11 @@ typedef MutationMutateCallback<Args> = void Function(Args args);
 
 typedef MutationMutateCallbackWithoutArgs = void Function();
 
-typedef MutationSuccessCallback<Args, Data> = void Function(Data data, Args args);
+typedef MutationSuccessCallback<Args, Data> = void Function(Args args, Data data);
 
 typedef MutationSuccessCallbackWithoutArgs<Data> = void Function(Data data);
 
-typedef MutationErrorCallback<Args, Err> = void Function(Err error, Args args);
+typedef MutationErrorCallback<Args, Err> = void Function(Args args, Err error);
 
 typedef MutationErrorCallbackWithoutArgs<Err> = void Function(Err error);
 

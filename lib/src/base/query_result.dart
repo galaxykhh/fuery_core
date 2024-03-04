@@ -1,6 +1,6 @@
-import 'package:rxdart/rxdart.dart';
 import 'package:fuery_core/src/query_options.dart';
 import 'package:fuery_core/src/query_state.dart';
+import 'package:rxdart/rxdart.dart';
 
 abstract class QueryResultBase<Data, Err, State extends QueryState<Data, Err>> {
   const QueryResultBase({
@@ -32,4 +32,17 @@ abstract class QueryResultBase<Data, Err, State extends QueryState<Data, Err>> {
       initialData: initialData,
     ));
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+  
+    return other is QueryResultBase<Data, Err, State> &&
+      other._data == _data &&
+      other._refetch == _refetch &&
+      other._updateOptions == _updateOptions;
+  }
+
+  @override
+  int get hashCode => _data.hashCode ^ _refetch.hashCode ^ _updateOptions.hashCode;
 }
