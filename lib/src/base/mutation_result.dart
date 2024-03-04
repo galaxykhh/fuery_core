@@ -23,7 +23,7 @@ abstract class MutationResultBase<Data, Err, State extends MutationState<Data, E
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
   
-    return other is MutationResultBase<Data, Err, State> &&
+    return other is MutationResultBase &&
       other._data == _data &&
       other._mutate == _mutate &&
       other._mutateAsync == _mutateAsync;

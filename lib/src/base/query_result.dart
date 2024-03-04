@@ -37,7 +37,7 @@ abstract class QueryResultBase<Data, Err, State extends QueryState<Data, Err>> {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
   
-    return other is QueryResultBase<Data, Err, State> &&
+    return other is QueryResultBase &&
       other._data == _data &&
       other._refetch == _refetch &&
       other._updateOptions == _updateOptions;
