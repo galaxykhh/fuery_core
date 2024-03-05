@@ -2,7 +2,7 @@ part of 'mutation.dart';
 
 class MutationWithArgs<Args, Data, Err> extends Mutation<Args, Data, Err> {
   MutationWithArgs({
-    required MutationWithArgsFn<Args, Data, Err> mutationFn,
+    required MutationAsyncFn<Args, Data, Err> mutationFn,
     MutationOptions<Args, Data, Err>? options,
     MutationKey? mutationKey,
   })  : _mutationFn = mutationFn,
@@ -11,7 +11,7 @@ class MutationWithArgs<Args, Data, Err> extends Mutation<Args, Data, Err> {
           options: options,
         );
 
-  final MutationWithArgsFn<Args, Data, Err> _mutationFn;
+  final MutationAsyncFn<Args, Data, Err> _mutationFn;
 
   Future<Data> _invoke(Args args) async {
     setArguments(args);
@@ -24,6 +24,10 @@ class MutationWithArgs<Args, Data, Err> extends Mutation<Args, Data, Err> {
 
       final Data data = await future;
 
+      emit(stream.value.copyWith(
+        data: () => data,
+        status: MutationStatus.success,
+      ));
       options.onSuccess?.call(args, data);
 
       return data;

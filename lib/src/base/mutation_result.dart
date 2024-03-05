@@ -1,11 +1,11 @@
 import 'package:fuery_core/src/mutation_state.dart';
 import 'package:rxdart/rxdart.dart';
 
-abstract class MutationResultBase<Data, Err, State extends MutationState<Data, Err>> {
+abstract class MutationResultBase<Data, Err, Mutate, MutateAsync, State extends MutationState<Data, Err>> {
   const MutationResultBase({
     required ValueStream<State> data,
-    required Function mutate,
-    required Function mutateAsync,
+    required Mutate mutate,
+    required MutateAsync mutateAsync,
   })  : _data = data,
         _mutate = mutate,
         _mutateAsync = mutateAsync;
@@ -13,20 +13,17 @@ abstract class MutationResultBase<Data, Err, State extends MutationState<Data, E
   final ValueStream<State> _data;
   ValueStream<State> get data => _data;
 
-  final Function _mutate;
-  Function get mutate => _mutate;
+  final Mutate _mutate;
+  Mutate get mutate => _mutate;
 
-  final Function _mutateAsync;
-  Function get mutateAsync => _mutateAsync;
+  final MutateAsync _mutateAsync;
+  MutateAsync get mutateAsync => _mutateAsync;
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
-    return other is MutationResultBase &&
-      other._data == _data &&
-      other._mutate == _mutate &&
-      other._mutateAsync == _mutateAsync;
+
+    return other is MutationResultBase && other._data == _data && other._mutate == _mutate && other._mutateAsync == _mutateAsync;
   }
 
   @override

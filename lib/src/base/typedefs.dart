@@ -8,9 +8,13 @@ typedef QueryFn<T> = Future<T> Function();
 
 typedef MutationKey = SparkKey;
 
-typedef MutationWithArgsFn<Args, Data, Err> = Future<Data> Function(Args args);
+typedef MutationAsyncFn<Args, Data, Err> = Future<Data> Function(Args args);
 
-typedef MutationWithoutArgsFn<Data, Err> = Future<Data> Function();
+typedef MutationSyncFn<Args, Data, Err> = void Function(Args args);
+
+typedef MutationNoArgsAsyncFn<Data, Err> = Future<Data> Function();
+
+typedef MutationNoArgsSyncFn<Data, Err> = void Function();
 
 typedef Store<T> = Map<String, T>;
 

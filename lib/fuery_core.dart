@@ -13,6 +13,7 @@ export 'src/query_result.dart';
 export 'src/mutation.dart';
 export 'src/mutation_options.dart';
 export 'src/mutation_state.dart';
+export 'src/mutation_result.dart';
 
 // exception
 export 'src/error/fuery_exception.dart';
