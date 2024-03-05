@@ -12,7 +12,7 @@ and the Flutter guide for
 -->
 
 
-# Fuery
+# Fuery Core
 ### Asynchronous State Management for Dart.
 
 ## Features
@@ -21,7 +21,7 @@ and the Flutter guide for
 
 ## Installation
 ```bash
-flutter pub add fuery
+flutter pub add fuery_core
 ```
 
 ## Basic Usage
@@ -29,34 +29,45 @@ flutter pub add fuery
 ```dart
 int id = 2;
 
+// QueryResult<Post, Error>
 late final post = Query.use<Post, Error>(
   queryKey: ['posts', id],
   queryFn: () => repository.getPostById(id),
 );
 
-print(post.stream.value);
-print(post.status);
+...
+
+print(post.data.value); // Instance of 'Post'
+print(post.status); // QueryStatus.success
 ```
 
 ### Mutation
 ```dart
-// with arguments
+// MutationResult<Post, Error, void Function(String), Future<Post> Function(String)>
 late final createPost = Mutation.args<String, Post, Error>(
   mutationFn: (String content) => repository.createPost(content),
+  onMutate: (args) => print('mutate started'),
+  onSuccess: (args, data) => print('mutate succeed'),
+  onError: (args, error) => print('mutate error occurred'),
 );
 
-mutation.mutate(args: 'some content');
-mutation.mutateAsync(args: 'some content');
+createPost.mutate('some content');
+// or
+await createPost.mutateAsync('some content');
 
-// without arguments
-late final removePosts = Mutation.noArgs<void, Exception>(
+// MutationResult<Post, Error, void Function(), Future<void> Function()>
+late final removeAll = Mutation.noArgs<void, Error>(
   mutationFn: () => repository.removeAll(),
+  onMutate: () => print('mutate started'),
+  onSuccess: (data) => print('mutate succeed'),
+  onError: (error) => print('mutate error occurred'),
 );
 
-removePosts.mutate();
-removePosts.mutateAsync();
+removeAll.mutate();
+// or
+await removeAll.mutateAsync();
 ```
-### FueryClient
+### Fuery Client
 ```dart
 // invalidate
 Fuery.invalidateQueries(queryKey: ['posts']);
@@ -72,5 +83,4 @@ Fuery.config(QueryOptions(
 
 ## Todo
 * Infinite Query
-* Mutation caching system
-* Improve Mutation usability (type safe arguments, ..etc)
+* More complex features like query-core (from react-query)
