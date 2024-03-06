@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:fuery_core/src/base/cacheable.dart';
 import 'package:fuery_core/src/fuery_client.dart';
 import 'package:fuery_core/src/util/garbage_collector.dart';
 import 'package:rxdart/rxdart.dart';
@@ -6,16 +7,13 @@ import 'package:fuery_core/src/base/typedefs.dart';
 import 'package:fuery_core/src/mutation_options.dart';
 import 'package:fuery_core/src/mutation_state.dart';
 
-abstract class MutationBase<Args, Data, Err, State extends MutationState<Data, Err>> with GarbageCollector {
+abstract class MutationBase<Args, Data, Err, State extends MutationState<Data, Err>> extends Cacheable with GarbageCollector {
   MutationBase({
     required MutationKey mutationKey,
     MutationOptions<Args, Data, Err>? options,
-  })  : _mutationKey = mutationKey,
-        _options = options ?? MutationOptions(),
-        _state = MutationState<Data, Err>() as State;
-
-  final MutationKey _mutationKey;
-  MutationKey get mutationKey => _mutationKey;
+  })  : _options = options ?? MutationOptions(),
+        _state = MutationState<Data, Err>() as State,
+        super(key: mutationKey);
 
   MutationOptions<Args, Data, Err> _options;
   MutationOptions<Args, Data, Err> get options => _options;
@@ -27,7 +25,7 @@ abstract class MutationBase<Args, Data, Err, State extends MutationState<Data, E
   void _setGcTimer() {
     super.setGcTimer(
       gcTime: _options.gcTime,
-      callback: () => Fuery.instance.removeMutation(mutationKey),
+      callback: () => Fuery.instance.removeMutation(key),
     );
   }
 

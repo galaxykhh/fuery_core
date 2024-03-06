@@ -1,12 +1,12 @@
 import 'dart:async';
 
-typedef SparkKey = List<dynamic>;
+typedef FueryKey = List<dynamic>;
 
-typedef QueryKey = SparkKey;
+typedef QueryKey = FueryKey;
 
 typedef QueryFn<T> = Future<T> Function();
 
-typedef MutationKey = SparkKey;
+typedef MutationKey = FueryKey;
 
 typedef MutationAsyncFn<Args, Data, Err> = Future<Data> Function(Args args);
 

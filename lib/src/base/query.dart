@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fuery_core/src/base/cacheable.dart';
 import 'package:fuery_core/src/util/garbage_collector.dart';
 import 'package:fuery_core/src/util/refetcher.dart';
 import 'package:rxdart/rxdart.dart';
@@ -8,18 +9,15 @@ import 'package:fuery_core/src/query_options.dart';
 import 'package:fuery_core/src/query_state.dart';
 import 'package:fuery_core/src/fuery_client.dart';
 
-abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> with Refetcher, GarbageCollector {
+abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> extends Cacheable with Refetcher, GarbageCollector {
   QueryBase({
     required QueryKey queryKey,
     required QueryOptions? options,
     required State state,
   })  : assert(queryKey.isNotEmpty, 'queryKey should not be empty'),
-        _queryKey = queryKey,
         _options = options ?? Fuery.instance.defaultOptions,
-        _state = state;
-
-  final QueryKey _queryKey;
-  QueryKey get queryKey => _queryKey;
+        _state = state,
+        super(key: queryKey);
 
   QueryOptions _options;
   QueryOptions get options => _options;
@@ -42,7 +40,7 @@ abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> with Re
   void _setGcTimer() {
     super.setGcTimer(
       gcTime: _options.gcTime,
-      callback: () => Fuery.instance.removeQuery(queryKey),
+      callback: () => Fuery.instance.removeQuery(key),
     );
   }
 

@@ -1,16 +1,16 @@
 import 'package:fuery_core/src/base/typedefs.dart';
 
 abstract class Cache<D> {
-  D? find(SparkKey key);
+  D? find(FueryKey key);
 
   List<D> findAll({
-    required SparkKey key,
+    required FueryKey key,
     bool? exact,
   });
 
-  bool has(SparkKey key);
+  bool has(FueryKey key);
 
-  void add(SparkKey key, D value);
+  void add(FueryKey key, D value);
 
-  void remove(SparkKey key);
+  void remove(FueryKey key);
 }
