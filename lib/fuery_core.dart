@@ -10,7 +10,7 @@ export 'src/query_state.dart';
 export 'src/query_result.dart';
 
 // mutation
-export 'src/mutation.dart';
+export 'src/mutation.dart' show Mutation;
 export 'src/mutation_options.dart';
 export 'src/mutation_state.dart';
 export 'src/mutation_result.dart';

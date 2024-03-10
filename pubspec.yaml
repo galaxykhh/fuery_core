@@ -1,7 +1,8 @@
 name: fuery_core
-description: "A new Flutter package project."
+description: "Asynchronous State Management for Dart"
 version: 0.0.1
-homepage:
+homepage: https://github.com/galaxykhh
+repository: https://github.com/galaxykhh/fuery_core
 
 environment:
   sdk: '>=3.2.6 <4.0.0'
