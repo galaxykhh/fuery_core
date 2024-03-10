@@ -5,18 +5,12 @@ homepage: https://github.com/galaxykhh
 repository: https://github.com/galaxykhh/fuery_core
 
 environment:
-  sdk: '>=3.2.6 <4.0.0'
-  flutter: ">=1.17.0"
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
-  flutter:
-    sdk: flutter
   rxdart: ^0.27.7
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^2.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
