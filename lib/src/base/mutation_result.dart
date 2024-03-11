@@ -1,7 +1,8 @@
 import 'package:fuery_core/src/mutation_state.dart';
 import 'package:rxdart/rxdart.dart';
 
-abstract class MutationResultBase<Data, Err, Mutate, MutateAsync, State extends MutationState<Data, Err>> {
+abstract class MutationResultBase<Data, Err, Mutate, MutateAsync,
+    State extends MutationState<Data, Err>> {
   const MutationResultBase({
     required ValueStream<State> data,
     required Mutate mutate,
@@ -23,7 +24,10 @@ abstract class MutationResultBase<Data, Err, Mutate, MutateAsync, State extends 
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is MutationResultBase && other._data == _data && other._mutate == _mutate && other._mutateAsync == _mutateAsync;
+    return other is MutationResultBase &&
+        other._data == _data &&
+        other._mutate == _mutate &&
+        other._mutateAsync == _mutateAsync;
   }
 
   @override

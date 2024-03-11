@@ -12,7 +12,7 @@ class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
   Query._({
     required QueryKey queryKey,
     required QueryFn<Data> queryFn,
-    QueryOptions? options,
+    QueryOptions<Data>? options,
   })  : _queryFn = queryFn,
         super(
           queryKey: queryKey,
@@ -21,13 +21,17 @@ class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
             status: QueryStatus.idle,
             fetchStatus: FetchStatus.idle,
             invalidated: false,
-            updatedAt: options?.initialData == null ? const Timestamp(0) : Timestamp.now(),
+            updatedAt: options?.initialData == null
+                ? const Timestamp(0)
+                : Timestamp.now(),
           ),
           options: QueryOptions<Data>(
             initialData: options?.initialData,
             gcTime: options?.gcTime ?? Fuery.instance.defaultOptions.gcTime,
-            staleTime: options?.staleTime ?? Fuery.instance.defaultOptions.staleTime,
-            refetchInterval: options?.refetchInterval ?? Fuery.instance.defaultOptions.refetchInterval,
+            staleTime:
+                options?.staleTime ?? Fuery.instance.defaultOptions.staleTime,
+            refetchInterval: options?.refetchInterval ??
+                Fuery.instance.defaultOptions.refetchInterval,
           ),
         );
 
@@ -48,15 +52,13 @@ class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
       staleTime: staleTime,
       refetchInterval: refetchInterval,
     );
-    final bool exists = query is QueryBase;
+    final bool exists = query is QueryBase && query is Query;
 
     if (exists) {
+      query.updateOptions(options);
+
       final bool shouldRefetch = !query.stream.value.isLoading && query.isStale;
-      if (shouldRefetch) {
-        query
-          ..updateOptions(options)
-          ..refetch();
-      }
+      if (shouldRefetch) query.refetch();
     } else {
       query = Query<Data, Err>._(
         queryKey: queryKey,
@@ -71,7 +73,7 @@ class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
     }
 
     return QueryResult<Data, Err>(
-      data: query.stream as ValueStream<QueryState<Data, Err>>,
+      stream: query.stream as ValueStream<QueryState<Data, Err>>,
       refetch: query.refetch,
       updateOptions: query.updateOptions,
     );
@@ -80,7 +82,7 @@ class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
   final QueryFn<Data> _queryFn;
 
   @override
-  Future<void> fetch() async {
+  void fetch() {
     if (stream.value.isLoading) return;
 
     emit(stream.value.copyWith(
@@ -88,22 +90,22 @@ class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
       fetchStatus: FetchStatus.fetching,
     ));
 
-    await _invokeQueryFn();
+    _invokeQueryFn();
   }
 
   @override
-  Future<void> refetch() async {
-    final bool shouldSkip = stream.value.isLoading || stream.value.isRefetching;
-
-    if (shouldSkip) return;
+  void refetch() {
+    if (shouldSkipFetch) return;
 
     emit(stream.value.copyWith(
-      status: stream.value.status.isFailure ? QueryStatus.pending : stream.value.status,
+      status: stream.value.status.isFailure
+          ? QueryStatus.pending
+          : stream.value.status,
       fetchStatus: FetchStatus.refetching,
       error: () => stream.value.status.isFailure ? null : stream.value.error,
     ));
 
-    await _invokeQueryFn();
+    _invokeQueryFn();
   }
 
   @override
@@ -118,8 +120,10 @@ class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
       final Data data = await _queryFn();
       emit(stream.value.copyWith(
         data: () => data,
+        error: () => null,
         status: QueryStatus.success,
         fetchStatus: FetchStatus.idle,
+        invalidated: false,
       ));
     } catch (e) {
       emit(stream.value.copyWith(

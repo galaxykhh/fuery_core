@@ -23,10 +23,14 @@ mixin CacheFilter<T extends Cacheable> {
             );
           }
 
-          return _hasSameOrLongerKeyLength(
-                key: key,
-                targetKey: item.value.key,
-              ) &&
+          return (_hasSameKeyLength(
+                    key: key,
+                    targetKey: item.value.key,
+                  ) ||
+                  _hasLongerKeyLength(
+                    key: key,
+                    targetKey: item.value.key,
+                  )) &&
               _compare(
                 key: key,
                 targetKey: item.value.key,
@@ -50,22 +54,11 @@ mixin CacheFilter<T extends Cacheable> {
     return key.length <= targetKey.length;
   }
 
-  bool _hasSameOrLongerKeyLength({
-    required FueryKey key,
-    required FueryKey targetKey,
-  }) {
-    return _hasSameKeyLength(
-          key: key,
-          targetKey: targetKey,
-        ) ||
-        _hasLongerKeyLength(
-          key: key,
-          targetKey: targetKey,
-        );
-  }
-
   bool _shouldStringify(dynamic target) {
-    return (target is! String && target is! int && target is! double && target is! bool);
+    return (target is! String &&
+        target is! int &&
+        target is! double &&
+        target is! bool);
   }
 
   bool _compare({
@@ -81,7 +74,9 @@ mixin CacheFilter<T extends Cacheable> {
       final dynamic keyItem = item.$2;
       final dynamic targetItem = targetKey[item.$1];
       final bool isSameType = targetItem.runtimeType == keyItem.runtimeType;
-      final bool isSame = isSameType && _shouldStringify(targetItem) ? targetItem.toString() == keyItem.toString() : targetItem == keyItem;
+      final bool isSame = isSameType && _shouldStringify(targetItem)
+          ? targetItem.toString() == keyItem.toString()
+          : targetItem == keyItem;
 
       if (isSame) continue;
 

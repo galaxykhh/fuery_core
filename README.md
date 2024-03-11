@@ -16,7 +16,7 @@ and the Flutter guide for
 ### Asynchronous State Management for Dart.
 
 ## Features
-* Async data fetching, caching, invalidation
+* Async data fetching, caching, invalidation, pagination
 * Mutation with side effect
 
 ## Installation
@@ -34,53 +34,88 @@ late final post = Query.use<Post, Error>(
   queryKey: ['posts', id],
   queryFn: () => repository.getPostById(id),
 );
-
-...
-
-print(post.data.value); // Instance of 'Post'
-print(post.status); // QueryStatus.success
 ```
+### Infinite Query
+```dart
+class PageResponse<T> {
+  final List<T> items;
+  final int? nextCursor;
+
+  ...
+  
+  factory PageResponse.fromJson(Map<String, dynamic> map) {
+    return ...;
+  }
+}
+
+class MyRepository {
+  Future<PageResponse<Post>> getPostsByPage(int page) async {
+    try {
+      return PageResponse.fromJson(...);
+    } catch(_) {
+      throw Error();
+    }
+  }
+}
+
+// InfiniteQueryResult<int, List<InfiniteData<int, PageResponse<Post>>>, Error>
+late final posts = InfiniteQuery.use<int, PageResponse<Post>, Error>(
+  queryKey: ['posts', 'list'],
+  queryFn: (int page) => repository.getPostsByPage(page),
+  initialPageParam: 1,
+  getNextPageParam: (lastPage, allPages) {
+    print(lastPage.runtimeType) // InfiniteData<int, PageResponse<Post>>,
+    print(allPages.runtimeType) // List<InfiniteData<int, PageResponse<Post>>>,
+    
+    return lastPage.nextPage;
+  },
+);
+```
+
 
 ### Mutation
 ```dart
 // MutationResult<Post, Error, void Function(String), Future<Post> Function(String)>
-late final createPost = Mutation.args<String, Post, Error>(
+late final createPost = Mutation.use<String, Post, Error>(
   mutationFn: (String content) => repository.createPost(content),
-  onMutate: (args) => print('mutate started'),
-  onSuccess: (args, data) => print('mutate succeed'),
-  onError: (args, error) => print('mutate error occurred'),
+  onMutate: (params) => print('mutate started'),
+  onSuccess: (params, data) => print('mutate succeed'),
+  onError: (params, error) => print('mutate error occurred'),
 );
 
 createPost.mutate('some content');
 // or
 await createPost.mutateAsync('some content');
+```
 
+### Mutation without parameters
+Sometimes you may need a Mutation without parameters. In such situations, you can use the Mutation.noParams constructor.
+
+```dart
 // MutationResult<Post, Error, void Function(), Future<void> Function()>
-late final removeAll = Mutation.noArgs<void, Error>(
-  mutationFn: () => repository.removeAll(),
+late final createRandomPost = Mutation.noParams<Post, Error>(
+  mutationFn: () => repository.createRandomPost(),
   onMutate: () => print('mutate started'),
   onSuccess: (data) => print('mutate succeed'),
   onError: (error) => print('mutate error occurred'),
 );
 
-removeAll.mutate();
+createRandomPost.mutate();
 // or
-await removeAll.mutateAsync();
+await createRandomPost.mutateAsync();
 ```
+
 ### Fuery Client
 ```dart
-// invalidate
+// invalidate.
 Fuery.invalidateQueries(queryKey: ['posts']);
 
-// configuration global options
-Fuery.config(QueryOptions(
-  gcTime: 1000 * 60 * 60,
-  staleTime: 0,
-  refetchInterval: 1000 * 60 * 30,
-));
+// Default query options configuration
+Fuery.configQueryOptions(
+  query: QueryOptions(...),
+  infiniteQuery: InfiniteQueryOptions(...),
+);
 ```
 
-
 ## Todo
-* Infinite Query
 * More complex features like query-core (from react-query)

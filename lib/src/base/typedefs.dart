@@ -1,33 +1,53 @@
 import 'dart:async';
 
+import 'package:fuery_core/src/infinite_data.dart';
+
+typedef ValueGetter<T> = T? Function();
+
 typedef FueryKey = List<dynamic>;
 
 typedef QueryKey = FueryKey;
 
-typedef QueryFn<T> = Future<T> Function();
+typedef QueryFn<Data> = Future<Data> Function();
+
+typedef InfiniteQueryFn<Params, Data> = Future<Data> Function(Params Params);
+
+typedef InfiniteQueryNextParamGetter<Param, Data> = Param? Function(
+  InfiniteData<Param, Data> lastPage,
+  List<InfiniteData<Param, Data>> allPages,
+);
+
+typedef InfiniteQueryPreviousParamGetter<Param, Data> = Param? Function(
+  InfiniteData<Param, Data> firstPage,
+  List<InfiniteData<Param, Data>> allPages,
+);
 
 typedef MutationKey = FueryKey;
 
-typedef MutationAsyncFn<Args, Data, Err> = Future<Data> Function(Args args);
+typedef MutationAsyncFn<Param, Data, Err> = Future<Data> Function(Param param);
 
-typedef MutationSyncFn<Args, Data, Err> = void Function(Args args);
+typedef MutationSyncFn<Param, Data, Err> = void Function(Param param);
 
-typedef MutationNoArgsAsyncFn<Data, Err> = Future<Data> Function();
+typedef MutationNoParamAsyncFn<Data, Err> = Future<Data> Function();
 
-typedef MutationNoArgsSyncFn<Data, Err> = void Function();
+typedef MutationNoParamSyncFn<Data, Err> = void Function();
 
 typedef Store<T> = Map<String, T>;
 
-typedef MutationMutateCallback<Args> = void Function(Args args);
+typedef MutationMutateCallback<Param> = void Function(Param param);
 
-typedef MutationMutateCallbackWithoutArgs = void Function();
+typedef MutationNoParamMutateCallback = void Function();
 
-typedef MutationSuccessCallback<Args, Data> = void Function(Args args, Data data);
+typedef MutationSuccessCallback<Param, Data> = void Function(
+  Param param,
+  Data data,
+);
 
-typedef MutationSuccessCallbackWithoutArgs<Data> = void Function(Data data);
+typedef MutationNoParamSuccessCallback<Data> = void Function(Data data);
 
-typedef MutationErrorCallback<Args, Err> = void Function(Args args, Err error);
+typedef MutationErrorCallback<Param, Err> = void Function(
+  Param params,
+  Err error,
+);
 
-typedef MutationErrorCallbackWithoutArgs<Err> = void Function(Err error);
-
-typedef ValueGetter<T> = T? Function();
+typedef MutationNoParamErrorCallback<Err> = void Function(Err error);

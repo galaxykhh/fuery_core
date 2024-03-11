@@ -12,22 +12,17 @@ class Fuery {
   static final Fuery _singleton = Fuery._();
   static Fuery get instance => _singleton;
 
-  QueryOptions _defaultQueryOptions = QueryOptions(
-    gcTime: 1000 * 6 * 5,
-    staleTime: 0,
-  );
+  QueryOptions _defaultQueryOptions = QueryOptions();
   QueryOptions get defaultOptions => _defaultQueryOptions;
 
   final QueryCache _queryCache = QueryCache();
-
-  final MutationCache _mutationCache = MutationCache();
-
   QueryCache get cache => _queryCache;
 
+  final MutationCache _mutationCache = MutationCache();
   MutationCache get mutationCache => _mutationCache;
 
-  void config(QueryOptions options) {
-    _defaultQueryOptions = options;
+  void configQueryOptions(QueryOptions? queryOptions) {
+    if (queryOptions != null) _defaultQueryOptions = queryOptions;
   }
 
   void addQuery(
@@ -42,7 +37,8 @@ class Fuery {
 
   QueryBase? getQuery(QueryKey queryKey) => _queryCache.find(queryKey);
 
-  T? getQueryData<T>(QueryKey queryKey) => _queryCache.find(queryKey)?.stream.value.data as T;
+  T? getQueryData<T>(QueryKey queryKey) =>
+      _queryCache.find(queryKey)?.stream.value.data as T;
 
   bool hasQuery(QueryKey queryKey) => _queryCache.has(queryKey);
 
@@ -94,9 +90,11 @@ class Fuery {
     );
   }
 
-  MutationBase? getMutation(MutationKey mutationKey) => _mutationCache.find(mutationKey);
+  MutationBase? getMutation(MutationKey mutationKey) =>
+      _mutationCache.find(mutationKey);
 
-  T? getMutationData<T>(MutationKey mutationKey) => _mutationCache.find(mutationKey)?.stream.value.data as T;
+  T? getMutationData<T>(MutationKey mutationKey) =>
+      _mutationCache.find(mutationKey)?.stream.value.data as T;
 
   bool hasMutation(MutationKey mutationKey) => _mutationCache.has(mutationKey);
 

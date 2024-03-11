@@ -3,7 +3,9 @@ import 'package:fuery_core/src/base/mutation.dart';
 import 'package:fuery_core/src/base/typedefs.dart';
 import 'package:fuery_core/src/util/cache_filter.dart';
 
-class MutationCache with CacheFilter<MutationBase> implements Cache<MutationBase> {
+class MutationCache
+    with CacheFilter<MutationBase>
+    implements Cache<MutationBase> {
   MutationCache._();
 
   factory MutationCache() => MutationCache._();

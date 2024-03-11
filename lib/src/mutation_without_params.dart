@@ -1,8 +1,8 @@
 part of 'mutation.dart';
 
-class MutationNoArgs<Data, Err> extends Mutation<void, Data, Err> {
-  MutationNoArgs({
-    required MutationNoArgsAsyncFn<Data, Err> mutationFn,
+class MutationNoParams<Data, Err> extends Mutation<void, Data, Err> {
+  MutationNoParams({
+    required MutationNoParamAsyncFn<Data, Err> mutationFn,
     MutationOptions<void, Data, Err>? options,
     MutationKey? mutationKey,
   })  : _mutationFn = mutationFn,
@@ -11,7 +11,7 @@ class MutationNoArgs<Data, Err> extends Mutation<void, Data, Err> {
           options: options,
         );
 
-  final MutationNoArgsAsyncFn<Data, Err> _mutationFn;
+  final MutationNoParamAsyncFn<Data, Err> _mutationFn;
 
   Future<Data> _invoke() async {
     emit(stream.value.copyWith(status: MutationStatus.pending));

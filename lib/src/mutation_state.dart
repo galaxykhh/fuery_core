@@ -24,7 +24,10 @@ class MutationState<Data, Err> extends MutationStateBase<Data, Err> {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is MutationState<Data, Err> && other.data == data && other.error == error && other.status == status;
+    return other is MutationState<Data, Err> &&
+        other.data == data &&
+        other.error == error &&
+        other.status == status;
   }
 
   @override

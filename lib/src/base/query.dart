@@ -9,7 +9,8 @@ import 'package:fuery_core/src/query_options.dart';
 import 'package:fuery_core/src/query_state.dart';
 import 'package:fuery_core/src/fuery_client.dart';
 
-abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> extends Cacheable with Refetcher, GarbageCollector {
+abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>>
+    extends Cacheable with Refetcher, GarbageCollector {
   QueryBase({
     required QueryKey queryKey,
     required QueryOptions? options,
@@ -48,9 +49,9 @@ abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> extends
     if (hasListener) super.cancelGcTimer();
   }
 
-  Future<void> fetch();
+  void fetch();
 
-  Future<void> refetch();
+  void refetch();
 
   void emit(State state) {
     _state = state;
@@ -64,7 +65,8 @@ abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> extends
   void updateOptions(QueryOptions options) {
     if (_options == options) return;
 
-    final bool shouldUpdateRefetchTimer = _options.refetchInterval != options.refetchInterval;
+    final bool shouldUpdateRefetchTimer =
+        _options.refetchInterval != options.refetchInterval;
     _options = options;
 
     if (shouldUpdateRefetchTimer) {
@@ -96,6 +98,9 @@ abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> extends
     return _subject!.stream;
   }
 
+  bool get shouldSkipFetch =>
+      stream.value.isLoading || stream.value.isRefetching;
+
   bool get hasListener => _subject?.hasListener ?? false;
 
   bool get isStale {
@@ -105,6 +110,7 @@ abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>> extends
 
     return state.invalidated ||
         state.updatedAt.value == 0 ||
-        DateTime.now().difference(state.updatedAt.toDateTime()).inSeconds >= options.staleTime;
+        DateTime.now().difference(state.updatedAt.toDateTime()).inSeconds >=
+            options.staleTime;
   }
 }

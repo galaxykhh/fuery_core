@@ -1,7 +1,7 @@
 import 'package:fuery_core/src/base/typedefs.dart';
 
 class QueryOptions<Data> {
-  QueryOptions({
+  const QueryOptions({
     int? gcTime,
     Data? initialData,
     int? staleTime,
@@ -34,7 +34,8 @@ class QueryOptions<Data> {
       gcTime: gcTime != null ? gcTime() : _gcTime,
       initialData: initialData != null ? initialData() : _initialData,
       staleTime: staleTime != null ? staleTime() : _staleTime,
-      refetchInterval: refetchInterval != null ? refetchInterval() : _refetchInterval,
+      refetchInterval:
+          refetchInterval != null ? refetchInterval() : _refetchInterval,
     );
   }
 
@@ -51,6 +52,9 @@ class QueryOptions<Data> {
 
   @override
   int get hashCode {
-    return _gcTime.hashCode ^ _initialData.hashCode ^ _staleTime.hashCode ^ _refetchInterval.hashCode;
+    return _gcTime.hashCode ^
+        _initialData.hashCode ^
+        _staleTime.hashCode ^
+        _refetchInterval.hashCode;
   }
 }

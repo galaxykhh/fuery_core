@@ -7,16 +7,18 @@ import 'package:fuery_core/src/base/typedefs.dart';
 import 'package:fuery_core/src/mutation_options.dart';
 import 'package:fuery_core/src/mutation_state.dart';
 
-abstract class MutationBase<Args, Data, Err, State extends MutationState<Data, Err>> extends Cacheable with GarbageCollector {
+abstract class MutationBase<Params, Data, Err,
+        State extends MutationState<Data, Err>> extends Cacheable
+    with GarbageCollector {
   MutationBase({
     required MutationKey mutationKey,
-    MutationOptions<Args, Data, Err>? options,
+    MutationOptions<Params, Data, Err>? options,
   })  : _options = options ?? MutationOptions(),
         _state = MutationState<Data, Err>() as State,
         super(key: mutationKey);
 
-  MutationOptions<Args, Data, Err> _options;
-  MutationOptions<Args, Data, Err> get options => _options;
+  MutationOptions<Params, Data, Err> _options;
+  MutationOptions<Params, Data, Err> get options => _options;
 
   State _state;
 
@@ -38,8 +40,8 @@ abstract class MutationBase<Args, Data, Err, State extends MutationState<Data, E
     _subject?.add(_state);
   }
 
-  void setArguments(Args arguments) {
-    _options = _options.copyWith(arguments: () => arguments);
+  void setParams(Params params) {
+    _options = _options.copyWith(params: () => params);
   }
 
   void wake() {
