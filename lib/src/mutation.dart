@@ -18,6 +18,7 @@ sealed class Mutation<Params, Data, Err>
     super.options,
   }) : super(mutationKey: mutationKey ?? []);
 
+  /// Returns cached [MutationBase] if exists. If it doesn't exist, cache the Mutation instance and return it.
   static MutationBase _getCachedMutation<T>({
     required MutationKey? mutationKey,
     required MutationBase Function() orElse,
@@ -42,7 +43,7 @@ sealed class Mutation<Params, Data, Err>
     }
   }
 
-  /// returns [MutationResult] by new or existing [Mutation].
+  /// Returns [MutationResult] new or existing [Mutation].
   /// If there is no existing [Mutation] with the same [mutationKey], it creates a new [Mutation] instance.
   ///
   /// [onMutate] is called when either [mutationFn] is invoked.
@@ -50,6 +51,17 @@ sealed class Mutation<Params, Data, Err>
   /// [onSuccess] is called when the [mutationFn] has successfully completed.
   ///
   /// [onError] is called when an error occurs in the [mutationFn].
+  ///
+  /// example:
+  /// ```dart
+  /// late final createPost = Mutation.use(
+  /// 	mutationFn: (String content) => repository.createPost(content),
+  /// 	onMutate: (param) => print('mutate started with $param'),
+  /// 	onSuccess: (param, data) {
+  /// 		Fuery.instance.invalidateQueries(queryKey: ['posts']);
+  /// 	},
+  /// );
+  /// ```
   static MutationResult<Data, Err, MutationSyncFn<Params, Data, Err>,
       MutationAsyncFn<Params, Data, Err>> use<Params, Data, Err>({
     required MutationAsyncFn<Params, Data, Err> mutationFn,
@@ -102,6 +114,14 @@ sealed class Mutation<Params, Data, Err>
   /// [onSuccess] is called when the [mutationFn] has successfully completed.
   ///
   /// [onError] is called when an error occurs in the [mutationFn].
+  ///
+  /// example:
+  /// ```dart
+  /// late final createPost = Mutation.noParam(
+  /// 	mutationFn: () => repository.removeAll(),
+  /// 	onMutate: () => print('mutate started'),
+  /// );
+  /// ```
   static MutationResult<Data, Err, MutationNoParamSyncFn,
       MutationNoParamAsyncFn<Data, Err>> noParam<Data, Err>({
     required MutationNoParamAsyncFn<Data, Err> mutationFn,
@@ -127,8 +147,9 @@ sealed class Mutation<Params, Data, Err>
             ),
           );
 
-          if (mutationKey != null)
+          if (mutationKey != null) {
             Fuery.instance.addMutation(mutationKey, mutation);
+          }
 
           return mutation;
         },

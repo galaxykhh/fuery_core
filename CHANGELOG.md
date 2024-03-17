@@ -1,3 +1,6 @@
+## 0.0.5
+- docs: add examples.
+
 ## 0.0.4
 - docs: update some basic descriptions.
 

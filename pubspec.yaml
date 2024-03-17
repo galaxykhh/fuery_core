@@ -1,6 +1,6 @@
 name: fuery_core
 description: "Asynchronous state management core library that helps implements the server side state management"
-version: 0.0.4
+version: 0.0.5
 homepage: https://github.com/galaxykhh
 repository: https://github.com/galaxykhh/fuery_core
 

@@ -56,6 +56,21 @@ class InfiniteQuery<Param, Data, Err> extends QueryBase<
           ),
         );
 
+  /// Returns [InfiniteQueryResult] new or existing [InfiniteQuery].
+  ///
+  /// If there is no existing cached [InfiniteQuery] with the same [queryKey], it creates a new [InfiniteQuery] instance.
+  ///
+  /// example:
+  /// ```dart
+  /// late final posts = InfiniteQuery.use(
+  /// 	queryKey: ['posts', 'list'],
+  /// 	queryFn: (int page) => getPostsByPage(page),
+  /// 	initialPageParam: 1,
+  /// 	getNextPageParam: (lastPage, allPages) {
+  /// 		return lastPage.data.nextCursor;
+  /// 	},
+  /// );
+  /// ```
   static InfiniteQueryResult<Param, Data, Err> use<Param, Data, Err>({
     required QueryKey queryKey,
     required InfiniteQueryFn<Param, Data> queryFn,
@@ -121,6 +136,9 @@ class InfiniteQuery<Param, Data, Err> extends QueryBase<
 
   final InfiniteQueryPager<Param, Data> _pager;
 
+  /// Called when an new [InfiniteQuery] created.
+  ///
+  /// In general, there won't typically be a situation where you directly call during development.
   @override
   void fetch() {
     if (stream.value.isLoading) return;
@@ -137,6 +155,9 @@ class InfiniteQuery<Param, Data, Err> extends QueryBase<
     );
   }
 
+  /// Refresh all pages.
+  ///
+  /// When there's already an existing [InfiniteQuery], it will be automatically called when necessary.
   @override
   void refetch() async {
     if (shouldSkipFetch) return;
@@ -183,14 +204,18 @@ class InfiniteQuery<Param, Data, Err> extends QueryBase<
     }
   }
 
+  /// invalidate [InfiniteQuery].
+  ///
+  /// It indicates to [refetch] when [hasListener] is true or the [InfiniteQuery] with the same [key] is called.
   @override
   void invalidate() {
     super.invalidate();
     if (hasListener) refetch();
   }
 
+  /// Request next page.
   void fetchNextPage() {
-    if (shouldSkipFetchNextPage) return;
+    if (_shouldSkipFetchNextPage) return;
     if (!hasNextPage) return;
 
     super.emit(stream.value.copyWith(nextPageStatus: QueryStatus.pending));
@@ -209,8 +234,9 @@ class InfiniteQuery<Param, Data, Err> extends QueryBase<
     }
   }
 
+  /// Request previous page.
   void fetchPreviousPage() {
-    if (shouldSkipFetchPreviousPage) return;
+    if (_shouldSkipFetchPreviousPage) return;
     if (!hasPreviousPage) return;
 
     super.emit(stream.value.copyWith(previousPageStatus: QueryStatus.pending));
@@ -229,6 +255,7 @@ class InfiniteQuery<Param, Data, Err> extends QueryBase<
     }
   }
 
+  /// Reset all pages and fetch first page based on [initialPageParam].
   void reset() {
     if (shouldSkipFetch) return;
 
@@ -292,10 +319,12 @@ class InfiniteQuery<Param, Data, Err> extends QueryBase<
     }
   }
 
+  /// Returns true when has data.
   bool get hasData =>
       stream.value.data != null &&
       stream.value.data is List<InfiniteData<Param, Data>>;
 
+  /// Returns true when has next page.
   bool get hasNextPage {
     if (!hasData || stream.value.data?.isEmpty == true) {
       return false;
@@ -305,6 +334,7 @@ class InfiniteQuery<Param, Data, Err> extends QueryBase<
         is Param;
   }
 
+  /// Return true when has previous page.
   bool get hasPreviousPage {
     if (stream.value.data == null || stream.value.data?.isEmpty == true) {
       return false;
@@ -314,11 +344,13 @@ class InfiniteQuery<Param, Data, Err> extends QueryBase<
         ?.call(stream.value.data!.first, stream.value.data!) is Param;
   }
 
-  bool get shouldSkipFetchNextPage {
+  /// Returns true when should skip fetch next page.
+  bool get _shouldSkipFetchNextPage {
     return super.shouldSkipFetch || stream.value.nextPageStatus.isPending;
   }
 
-  bool get shouldSkipFetchPreviousPage {
+  /// Returns true when should skip fetch previous page.
+  bool get _shouldSkipFetchPreviousPage {
     return super.shouldSkipFetch || stream.value.previousPageStatus.isPending;
   }
 }

@@ -35,8 +35,17 @@ class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
           ),
         );
 
-  /// returns [QueryResult] by new or existing [Query].
-  /// If there is no existing [Query] with the same [queryKey], it creates a new [Query] instance.
+  /// Returns [QueryResult] new or existing [Query].
+  ///
+  /// If there is no existing cached [Query] with the same [queryKey], creates a new [Query] instance.
+  ///
+  /// example:
+  /// ```dart
+  /// late final post = Query.use(
+  /// 	queryKey: ['posts', 2], // The post with the Id of 2.
+  /// 	queryFn: () => getPostById(2),
+  /// );
+  /// ```
   static QueryResult<Data, Err> use<Data, Err>({
     required QueryKey queryKey,
     required QueryFn<Data> queryFn,
@@ -98,8 +107,9 @@ class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
     _invokeQueryFn();
   }
 
-  /// When there's already an existing [Query], it will be automatically called when necessary.
+  /// Refresh query.
   ///
+  /// When there's already an existing [Query], it will be automatically called when necessary.
   /// When new data needs to be requested, you can call it to refresh and update the data.
   @override
   void refetch() {

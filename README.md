@@ -67,7 +67,7 @@ late final posts = InfiniteQuery.use<int, PageResponse<Post>, Error>(
     print(lastPage.runtimeType) // InfiniteData<int, PageResponse<Post>>,
     print(allPages.runtimeType) // List<InfiniteData<int, PageResponse<Post>>>,
     
-    return lastPage.nextPage;
+    return lastPage.data.nextPage;
   },
 );
 ```
@@ -78,9 +78,9 @@ late final posts = InfiniteQuery.use<int, PageResponse<Post>, Error>(
 // MutationResult<Post, Error, void Function(String), Future<Post> Function(String)>
 late final createPost = Mutation.use<String, Post, Error>(
   mutationFn: (String content) => repository.createPost(content),
-  onMutate: (params) => print('mutate started'),
-  onSuccess: (params, data) => print('mutate succeed'),
-  onError: (params, error) => print('mutate error occurred'),
+  onMutate: (param) => print('mutate started'),
+  onSuccess: (param, data) => print('mutate succeed'),
+  onError: (param, error) => print('mutate error occurred'),
 );
 
 createPost.mutate('some content');
