@@ -35,10 +35,15 @@ class Fuery {
     );
   }
 
-  QueryBase? getQuery(QueryKey queryKey) => _queryCache.find(queryKey);
+  QueryBase? getQuery(QueryKey queryKey) {
+    return _queryCache.find(queryKey);
+  }
 
-  T? getQueryData<T>(QueryKey queryKey) =>
-      _queryCache.find(queryKey)?.stream.value.data as T;
+  T? getQueryData<T>(QueryKey queryKey) {
+    final QueryBase? query = getQuery(queryKey);
+
+    return query?.stream.value as T?;
+  }
 
   bool hasQuery(QueryKey queryKey) => _queryCache.has(queryKey);
 
@@ -90,13 +95,19 @@ class Fuery {
     );
   }
 
-  MutationBase? getMutation(MutationKey mutationKey) =>
-      _mutationCache.find(mutationKey);
+  MutationBase? getMutation(MutationKey mutationKey) {
+    return _mutationCache.find(mutationKey);
+  }
 
-  T? getMutationData<T>(MutationKey mutationKey) =>
-      _mutationCache.find(mutationKey)?.stream.value.data as T;
+  T? getMutationData<T>(MutationKey mutationKey) {
+    final MutationBase? mutation = getMutation(mutationKey);
 
-  bool hasMutation(MutationKey mutationKey) => _mutationCache.has(mutationKey);
+    return mutation?.stream.value as T?;
+  }
+
+  bool hasMutation(MutationKey mutationKey) {
+    return _mutationCache.has(mutationKey);
+  }
 
   void removeMutation(MutationKey mutationKey) {
     _mutationCache.remove(mutationKey);

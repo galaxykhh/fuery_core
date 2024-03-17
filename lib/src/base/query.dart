@@ -9,6 +9,7 @@ import 'package:fuery_core/src/query_options.dart';
 import 'package:fuery_core/src/query_state.dart';
 import 'package:fuery_core/src/fuery_client.dart';
 
+/// An interface for [Query] and [InfiniteQuery]
 abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>>
     extends Cacheable with Refetcher, GarbageCollector {
   QueryBase({
@@ -53,20 +54,26 @@ abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>>
 
   void refetch();
 
+  /// Updates the state to the provided [state].
   void emit(State state) {
     _state = state;
     _subject?.add(_state);
   }
 
+  /// Mark as [invalidated] to true.
   void invalidate() {
     emit(_state.copyWith(invalidated: true) as State);
   }
 
+  /// Updates options to the provided [options].
+  ///
+  /// If the [refetchInterval] is changed, the Timer will reset.
   void updateOptions(QueryOptions options) {
     if (_options == options) return;
 
     final bool shouldUpdateRefetchTimer =
         _options.refetchInterval != options.refetchInterval;
+
     _options = options;
 
     if (shouldUpdateRefetchTimer) {
@@ -75,6 +82,7 @@ abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>>
     }
   }
 
+  /// Assign a [BehaviorSubject], indicating that listeners can subscribe to it.
   void wake() {
     if (_subject != null) return;
 
@@ -86,6 +94,7 @@ abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>>
       ..onCancel = sleep;
   }
 
+  /// Close [BehaviorSubject] and start the garbage collector timer.
   Future<void> sleep() async {
     await _subject?.close();
     cancelRefetchTimer();
@@ -93,6 +102,7 @@ abstract class QueryBase<Data, Err, State extends QueryState<Data, Err>>
     _setGcTimer();
   }
 
+  /// Returns stream of state and Assign [BehaviorSubject] if not exists.
   ValueStream<State> get stream {
     wake();
     return _subject!.stream;

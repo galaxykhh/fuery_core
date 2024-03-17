@@ -1,6 +1,8 @@
 import 'package:fuery_core/src/base/typedefs.dart';
 
 abstract class Cache<D> {
+  List<D> getAll();
+
   D? find(FueryKey key);
 
   List<D> findAll({

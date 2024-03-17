@@ -12,6 +12,7 @@ export 'src/query_result.dart';
 // infinite query
 export 'src/infinite_query.dart' show InfiniteQuery;
 export 'src/infinite_data.dart';
+export 'src/infinite_query_state.dart';
 export 'src/infinite_query_result.dart';
 
 // mutation

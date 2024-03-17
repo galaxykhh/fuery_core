@@ -125,7 +125,7 @@ class InfiniteQuery<Param, Data, Err> extends QueryBase<
   void fetch() {
     if (stream.value.isLoading) return;
 
-    emit(stream.value.copyWith(
+    super.emit(stream.value.copyWith(
       status: QueryStatus.pending,
       fetchStatus: FetchStatus.fetching,
     ));
@@ -153,7 +153,7 @@ class InfiniteQuery<Param, Data, Err> extends QueryBase<
     }
 
     try {
-      emit(stream.value.copyWith(fetchStatus: FetchStatus.refetching));
+      super.emit(stream.value.copyWith(fetchStatus: FetchStatus.refetching));
 
       final List<InfiniteData<Param, Data>> pages = [];
 
@@ -167,7 +167,7 @@ class InfiniteQuery<Param, Data, Err> extends QueryBase<
         pages.add(page);
       }
 
-      emit(stream.value.copyWith(
+      super.emit(stream.value.copyWith(
         data: () => pages,
         error: () => null,
         status: QueryStatus.success,
@@ -175,7 +175,7 @@ class InfiniteQuery<Param, Data, Err> extends QueryBase<
         invalidated: false,
       ));
     } catch (e) {
-      emit(stream.value.copyWith(
+      super.emit(stream.value.copyWith(
         error: () => e as Err,
         status: QueryStatus.failure,
         fetchStatus: FetchStatus.idle,
@@ -193,7 +193,7 @@ class InfiniteQuery<Param, Data, Err> extends QueryBase<
     if (shouldSkipFetchNextPage) return;
     if (!hasNextPage) return;
 
-    emit(stream.value.copyWith(nextPageStatus: QueryStatus.pending));
+    super.emit(stream.value.copyWith(nextPageStatus: QueryStatus.pending));
 
     final Param? nextPageParam = _pager.getNextPageParam(
       stream.value.data!.last,
@@ -213,7 +213,7 @@ class InfiniteQuery<Param, Data, Err> extends QueryBase<
     if (shouldSkipFetchPreviousPage) return;
     if (!hasPreviousPage) return;
 
-    emit(stream.value.copyWith(previousPageStatus: QueryStatus.pending));
+    super.emit(stream.value.copyWith(previousPageStatus: QueryStatus.pending));
 
     final Param? previousPageParam = _pager.getPreviousPageParam?.call(
       stream.value.data!.last,
@@ -232,13 +232,14 @@ class InfiniteQuery<Param, Data, Err> extends QueryBase<
   void reset() {
     if (shouldSkipFetch) return;
 
-    emit(stream.value.copyWith(
+    super.emit(stream.value.copyWith(
       data: () => const [],
       status: QueryStatus.idle,
       fetchStatus: FetchStatus.idle,
       nextPageStatus: QueryStatus.idle,
       previousPageStatus: QueryStatus.idle,
       error: () => null,
+      invalidated: true,
     ));
 
     fetch();
@@ -256,7 +257,7 @@ class InfiniteQuery<Param, Data, Err> extends QueryBase<
         param: param,
       );
 
-      emit(stream.value.copyWith(
+      super.emit(stream.value.copyWith(
         data: () {
           if (stream.value.data == null || direction == null || resetOnEmit) {
             return [
@@ -283,7 +284,7 @@ class InfiniteQuery<Param, Data, Err> extends QueryBase<
         invalidated: false,
       ));
     } catch (e) {
-      emit(stream.value.copyWith(
+      super.emit(stream.value.copyWith(
         error: () => e as Err,
         status: QueryStatus.failure,
         fetchStatus: FetchStatus.idle,

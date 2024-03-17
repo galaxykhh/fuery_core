@@ -35,15 +35,18 @@ abstract class MutationBase<Params, Data, Err,
     if (hasListener) super.cancelGcTimer();
   }
 
+  /// Updates the state to the provided [state].
   void emit(State state) {
     _state = state;
     _subject?.add(_state);
   }
 
+  /// Updates params to the provided [params].
   void setParams(Params params) {
     _options = _options.copyWith(params: () => params);
   }
 
+  /// Assign a [BehaviorSubject], indicating that listeners can subscribe to it.
   void wake() {
     if (_subject != null) return;
 
@@ -52,12 +55,14 @@ abstract class MutationBase<Params, Data, Err,
       ..onCancel = sleep;
   }
 
+  /// Close [BehaviorSubject] and start the garbage collector timer.
   Future<void> sleep() async {
     await _subject?.close();
     _subject = null;
     _setGcTimer();
   }
 
+  /// Returns stream of state and Assign [BehaviorSubject] if not exists.
   ValueStream<State> get stream {
     wake();
     return _subject!.stream;

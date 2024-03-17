@@ -1,6 +1,5 @@
 part 'invalid_timestamp.dart';
 part 'query_state_type.dart';
-part 'selector_not_found.dart';
 
 sealed class FueryException {
   const FueryException({this.message = ''});

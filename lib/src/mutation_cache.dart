@@ -18,6 +18,11 @@ class MutationCache
   }
 
   @override
+  List<MutationBase> getAll() {
+    return _mutations.entries.map((e) => e.value).toList();
+  }
+
+  @override
   MutationBase? find(MutationKey key) {
     return _mutations[key.toString()];
   }

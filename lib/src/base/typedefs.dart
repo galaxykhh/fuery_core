@@ -10,7 +10,7 @@ typedef QueryKey = FueryKey;
 
 typedef QueryFn<Data> = Future<Data> Function();
 
-typedef InfiniteQueryFn<Params, Data> = Future<Data> Function(Params Params);
+typedef InfiniteQueryFn<Params, Data> = Future<Data> Function(Params params);
 
 typedef InfiniteQueryNextParamGetter<Param, Data> = Param? Function(
   InfiniteData<Param, Data> lastPage,

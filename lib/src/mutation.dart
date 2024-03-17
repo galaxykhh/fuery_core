@@ -42,6 +42,14 @@ sealed class Mutation<Params, Data, Err>
     }
   }
 
+  /// returns [MutationResult] by new or existing [Mutation].
+  /// If there is no existing [Mutation] with the same [mutationKey], it creates a new [Mutation] instance.
+  ///
+  /// [onMutate] is called when either [mutationFn] is invoked.
+  ///
+  /// [onSuccess] is called when the [mutationFn] has successfully completed.
+  ///
+  /// [onError] is called when an error occurs in the [mutationFn].
   static MutationResult<Data, Err, MutationSyncFn<Params, Data, Err>,
       MutationAsyncFn<Params, Data, Err>> use<Params, Data, Err>({
     required MutationAsyncFn<Params, Data, Err> mutationFn,
@@ -68,8 +76,9 @@ sealed class Mutation<Params, Data, Err>
             ),
           );
 
-          if (mutationKey != null)
+          if (mutationKey != null) {
             Fuery.instance.addMutation(mutationKey, mutation);
+          }
 
           return mutation;
         },
@@ -85,6 +94,14 @@ sealed class Mutation<Params, Data, Err>
     }
   }
 
+  /// returns [MutationResult] by new or existing [Mutation].
+  /// If there is no existing [Mutation] with the same [mutationKey], it creates a new [Mutation] instance.
+  ///
+  /// [onMutate] is called when either [mutationFn] is invoked.
+  ///
+  /// [onSuccess] is called when the [mutationFn] has successfully completed.
+  ///
+  /// [onError] is called when an error occurs in the [mutationFn].
   static MutationResult<Data, Err, MutationNoParamSyncFn,
       MutationNoParamAsyncFn<Data, Err>> noParam<Data, Err>({
     required MutationNoParamAsyncFn<Data, Err> mutationFn,

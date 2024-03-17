@@ -35,6 +35,8 @@ class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
           ),
         );
 
+  /// returns [QueryResult] by new or existing [Query].
+  /// If there is no existing [Query] with the same [queryKey], it creates a new [Query] instance.
   static QueryResult<Data, Err> use<Data, Err>({
     required QueryKey queryKey,
     required QueryFn<Data> queryFn,
@@ -81,11 +83,14 @@ class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
 
   final QueryFn<Data> _queryFn;
 
+  /// Called when an new [Query] created.
+  ///
+  /// In general, there won't typically be a situation where you directly call during development.
   @override
   void fetch() {
     if (stream.value.isLoading) return;
 
-    emit(stream.value.copyWith(
+    super.emit(stream.value.copyWith(
       status: QueryStatus.pending,
       fetchStatus: FetchStatus.fetching,
     ));
@@ -93,11 +98,14 @@ class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
     _invokeQueryFn();
   }
 
+  /// When there's already an existing [Query], it will be automatically called when necessary.
+  ///
+  /// When new data needs to be requested, you can call it to refresh and update the data.
   @override
   void refetch() {
     if (shouldSkipFetch) return;
 
-    emit(stream.value.copyWith(
+    super.emit(stream.value.copyWith(
       status: stream.value.status.isFailure
           ? QueryStatus.pending
           : stream.value.status,
@@ -108,6 +116,9 @@ class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
     _invokeQueryFn();
   }
 
+  /// invalidate [Query].
+  ///
+  /// It indicates to [refetch] when [hasListener] is true or the [Query] with the same [key] is called.
   @override
   void invalidate() {
     super.invalidate();
@@ -118,7 +129,7 @@ class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
   Future<void> _invokeQueryFn() async {
     try {
       final Data data = await _queryFn();
-      emit(stream.value.copyWith(
+      super.emit(stream.value.copyWith(
         data: () => data,
         error: () => null,
         status: QueryStatus.success,
@@ -126,7 +137,7 @@ class Query<Data, Err> extends QueryBase<Data, Err, QueryState<Data, Err>> {
         invalidated: false,
       ));
     } catch (e) {
-      emit(stream.value.copyWith(
+      super.emit(stream.value.copyWith(
         error: () => e as Err,
         status: QueryStatus.failure,
         fetchStatus: FetchStatus.idle,

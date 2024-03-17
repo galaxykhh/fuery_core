@@ -16,6 +16,11 @@ class QueryCache with CacheFilter<QueryBase> implements Cache<QueryBase> {
   }
 
   @override
+  List<QueryBase> getAll() {
+    return _queries.entries.map((e) => e.value).toList();
+  }
+
+  @override
   QueryBase? find(QueryKey key) => _queries[key.toString()];
 
   @override
