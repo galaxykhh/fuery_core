@@ -2,6 +2,9 @@ import 'package:fuery_core/src/base/cacheable.dart';
 import 'package:fuery_core/src/base/typedefs.dart';
 
 mixin CacheFilter<T extends Cacheable> {
+  /// Filter items based on their keys.
+  ///
+  /// If [exact] is true, filter only elements with exactly matching keys.
   List<T> filter({
     required Store<T> items,
     FueryKey? key,
@@ -40,6 +43,7 @@ mixin CacheFilter<T extends Cacheable> {
         .toList();
   }
 
+  /// Returns true if has same key length.
   bool _hasSameKeyLength({
     required FueryKey key,
     required FueryKey targetKey,
@@ -47,6 +51,7 @@ mixin CacheFilter<T extends Cacheable> {
     return key.length == targetKey.length;
   }
 
+  /// Returns true if has longer key length.
   bool _hasLongerKeyLength({
     required FueryKey key,
     required FueryKey targetKey,
@@ -54,6 +59,7 @@ mixin CacheFilter<T extends Cacheable> {
     return key.length <= targetKey.length;
   }
 
+  /// Returns true when it's not a primitive type.
   bool _shouldStringify(dynamic target) {
     return (target is! String &&
         target is! int &&
@@ -61,6 +67,7 @@ mixin CacheFilter<T extends Cacheable> {
         target is! bool);
   }
 
+  /// Returns true when comparing two keys and they are the same.
   bool _compare({
     required FueryKey key,
     required FueryKey targetKey,

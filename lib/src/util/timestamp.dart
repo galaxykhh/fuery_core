@@ -6,14 +6,17 @@ class Timestamp {
 
   final int value;
 
+  /// Map [dateTime] to [Timestamp]
   factory Timestamp.fromDateTime(DateTime dateTime) {
     return Timestamp(dateTime.millisecondsSinceEpoch);
   }
 
+  /// Return the current time as a [Timestamp].
   factory Timestamp.now() {
     return Timestamp.fromDateTime(DateTime.now());
   }
 
+  /// Returns as a [DateTime] object.
   DateTime toDateTime() {
     try {
       return DateTime.fromMillisecondsSinceEpoch(value);
@@ -25,6 +28,7 @@ class Timestamp {
     }
   }
 
+  /// Compare two [Timestamp]s and return the difference.
   Timestamp difference(Timestamp other) {
     final Duration diff = toDateTime().difference(other.toDateTime());
 

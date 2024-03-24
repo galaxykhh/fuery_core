@@ -3,6 +3,7 @@ import 'dart:async';
 mixin Refetcher {
   Timer? _timer;
 
+  /// Set timer if timer is null.
   void setRefetchTimer({
     required int interval,
     required void Function() callback,
@@ -13,6 +14,7 @@ mixin Refetcher {
     );
   }
 
+  /// Cancel timer if timer exists.
   void cancelRefetchTimer() {
     if (hasRefetchTimer) {
       _timer?.cancel();

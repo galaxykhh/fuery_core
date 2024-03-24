@@ -3,6 +3,7 @@ import 'dart:async';
 mixin GarbageCollector {
   Timer? _timer;
 
+  /// Set timer if timer is null.
   void setGcTimer({
     required int gcTime,
     required void Function() callback,
@@ -13,6 +14,7 @@ mixin GarbageCollector {
     );
   }
 
+  /// Cancel timer if timer exists.
   void cancelGcTimer() {
     if (hasGcTimer) {
       _timer?.cancel();
