@@ -1,5 +1,7 @@
 library fuery_core;
 
+// types
+export 'src/base/typedefs.dart';
 // client
 export 'src/fuery_client.dart';
 

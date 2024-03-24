@@ -1,3 +1,7 @@
+## 0.1.0
+- docs: utils documentations
+- fix: export typedefs
+
 ## 0.0.5
 - docs: add examples.
 
@@ -13,4 +17,3 @@
 
 ## 0.0.1
 - chore: Fuery core pre release.
-
