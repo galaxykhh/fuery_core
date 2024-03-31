@@ -39,6 +39,8 @@ abstract class QueryStateBase<Data, Err> {
   final bool invalidated;
   final Timestamp updatedAt;
 
+  bool get isSuccess => status.isSuccess;
+
   bool get isPending => status.isPending;
 
   bool get isFetching => fetchStatus.isFetching;

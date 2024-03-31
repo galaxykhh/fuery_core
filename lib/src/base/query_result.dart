@@ -16,11 +16,14 @@ class QueryResultBase<Data, Err, State extends QueryState<Data, Err>> {
 
   ValueStream<State> get stream => _stream;
 
-  Stream<Data?> get data => stream.map((s) => s.data);
+  Stream<Data?> get data => _stream.map((s) => s.data);
   Data? get dataValue => _stream.value.data;
 
   Stream<QueryStatus> get status => _stream.map((s) => s.status);
   QueryStatus get statusValue => _stream.value.status;
+
+  Stream<FetchStatus> get fetchStatus => _stream.map((s) => s.fetchStatus);
+  FetchStatus get fetchStatusValue => _stream.value.fetchStatus;
 
   Stream<Err?> get error => _stream.map((s) => s.error);
   Err? get errorValue => _stream.value.error;
@@ -43,6 +46,18 @@ class QueryResultBase<Data, Err, State extends QueryState<Data, Err>> {
       initialData: initialData,
     ));
   }
+
+  bool get isSuccess => _stream.value.isSuccess;
+
+  bool get isPending => _stream.value.isPending;
+
+  bool get isFetching => _stream.value.isFetching;
+
+  bool get isLoading => _stream.value.isPending || _stream.value.isFetching;
+
+  bool get isRefetching => _stream.value.fetchStatus.isRefetching;
+
+  bool get isError => _stream.value.error != null;
 
   @override
   bool operator ==(Object other) {
