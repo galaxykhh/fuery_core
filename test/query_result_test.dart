@@ -34,8 +34,10 @@ void main() {
   group('QueryResult', () {
     test('Getters in QueryResult works properly', () {
       // Assert
-      expect(result.stream,
-          TypeMatcher<ValueStream<QueryState<String, dynamic>>>());
+      expect(
+        result.stream,
+        TypeMatcher<ValueStream<QueryState<String, dynamic>>>(),
+      );
       expect(result.data, TypeMatcher<Stream<String?>>());
       expect(result.status, TypeMatcher<Stream<QueryStatus>>());
       expect(result.error, TypeMatcher<Stream<dynamic>>());

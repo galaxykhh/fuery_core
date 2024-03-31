@@ -1,3 +1,9 @@
+## 0.2.0
+- feat: `QueryStatus` getters added in `QueryResult`
+  `isSuccess`, `isPending`, `isFetching`, `isLoading`, `isRefetching`, `isError`
+- test: Tests for the following items have been added.
+  `FetchStatus`, `QueryStatus`, `MutationStatus`, `Cacheable`, `QueryState`, `QueryResult`
+
 ## 0.1.0
 - docs: utils documentations
 - fix: export typedefs
@@ -9,8 +15,8 @@
 - docs: update some basic descriptions.
 
 ## 0.0.3
-- feat: InfiniteQuery
-- docs: InfiniteQuery usage
+- feat: `InfiniteQuery`
+- docs: `InfiniteQuery` usage
 
 ## 0.0.2
 - docs: update dependencies and license.
