@@ -1,3 +1,6 @@
+## 0.2.1
+- fix: include export `QueryStatus`, `MutationStatus` and `FetchStatus`
+
 ## 0.2.0
 - feat: `QueryStatus` getters added in `QueryResult`
   `isSuccess`, `isPending`, `isFetching`, `isLoading`, `isRefetching`, `isError`

@@ -1,6 +1,5 @@
 // ignore_for_file: dead_code
 import 'package:fuery_core/fuery_core.dart';
-import 'package:fuery_core/src/base/query_state.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:test/test.dart';
 

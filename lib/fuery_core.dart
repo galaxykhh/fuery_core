@@ -5,6 +5,10 @@ export 'src/base/typedefs.dart';
 // client
 export 'src/fuery_client.dart';
 
+// base
+export 'src/base/query_state.dart' show QueryStatus, FetchStatus;
+export 'src/base/mutation_state.dart' show MutationStatus;
+
 // query
 export 'src/query.dart';
 export 'src/query_options.dart';
