@@ -55,7 +55,7 @@ class Fuery {
   T? getQueryData<T>(QueryKey queryKey) {
     final QueryBase? query = getQuery(queryKey);
 
-    return query?.stream.value as T?;
+    return query?.stream.value.data as T?;
   }
 
   /// Return whether the [QueryBase] is cached or not.

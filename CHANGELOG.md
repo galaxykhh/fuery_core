@@ -1,3 +1,6 @@
+## 0.2.2
+- fix: The type error for `getQueryData` has been resolved.
+
 ## 0.2.1
 - fix: include export `QueryStatus`, `MutationStatus` and `FetchStatus`
 
